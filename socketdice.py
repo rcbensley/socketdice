@@ -8,6 +8,7 @@ import argparse
 import threading
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
+NAME_PATTERN = re.sub(r'[^A-Za-z0-9 ]+', '', s)
 COMMANDS = b"Accepted commands: /roll, /rolldm, /quit, /exit\n"
 
 HEADER = """
@@ -54,6 +55,13 @@ class Server:
     def _intro_server(self):
         i = SERVER_INTROS[random.randint(1,len(SERVER_INTROS-1))]
         return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
+    
+    def sef_name(self, add, name):
+        if addr in self.players:
+            return
+        n = re.sub(r'[^A-Za-z0-9 ]+', '', name)
+        self.players[addr] = n
+        print(f"Added player {n} from {addr}")
 
     def roll(self, input):
         results = []
@@ -63,7 +71,7 @@ class Server:
         for i in input:
             match = dice_pattern.match(i.strip())
             if not match:
-                print(f"Unknown roll format: i")
+                print(f"Unknown roll format: {i}")
                 continue
 
             num, sides, modifier = match.groups()
@@ -95,15 +103,20 @@ class Server:
                 if not m or len(m) == 0:
                     continue
 
-                if m[0] in ("/exit", "/quit"):
+                cmd = [0]
+                msg = m[1:]
+
+                if cmd in ("/exit", "/quit"):
                     conn.sendall(b"Farewell\n")
                     break
-                elif m[0] == "/rolldm":
-                    roll = self.roll(message)
-                    conn.sendall(f"You rolled a {roll}\n".encode("utf-8"))
-                elif m[0] == "/roll":
-                    roll = self.roll(message)
-                    conn.sendall(f"You rolled a {roll}\n".encode("utf-8"))
+                elif cmd == "/name":
+                    self.set_name(msg)
+                elif cmd == "/rolldm":
+                    roll = self.roll(msg)
+                    print(" ".join(roll))
+                elif cmd == "/roll":
+                    roll = self.roll(msg)
+                    conn.sendall(f"{" ".join(roll)}\n".encode("utf-8"))
                 else:
                     conn.sendall(COMMANDS)
         except ConnectionResetError:
