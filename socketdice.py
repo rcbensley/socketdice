@@ -35,7 +35,7 @@ SERVER_INTROS = [
     "critical fails",
     "the murder hobos to ride again",
     "the adventure toddlers",
-    "the Bard to TPK...again",
+    "the Bard to TPK...again,",
     "your nat 20's! Nah just kidding, it's a 1 again",
     "to rig the DC for all charisma builds",
     "them to talk themselves outta this one",
@@ -56,20 +56,26 @@ class Server:
         self.server = None
         self.running = True
         self.players = {}
+        self.names = {}
 
     def _intro_client(self):
         return "client intro"
 
     def _intro_server(self):
-        i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS - 1))]
+        i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS)-1)]
         return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
 
     def set_name(self, addr, name):
         if addr in self.players:
+            logging.info(f"{addr} already exists")
             return
         name = " ".join(name)
         n = re.sub(r"[^A-Za-z0-9 ]+", "", name)
+        if n in self.names:
+            logging.info(f"{name} already exists")
+            return
         self.players[addr] = n
+        self.names[n] = addr
         logging.info(f"Added player {n} from {addr}")
 
     def pname(self, addr):
@@ -147,7 +153,7 @@ class Server:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((self.host, self.port))
         self.server.listen()
-        logging.info(self._intro_server)
+        logging.info(self._intro_server())
         try:
             while self.running:
                 conn, addr = self.server.accept()
