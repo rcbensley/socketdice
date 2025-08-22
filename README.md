@@ -1,3 +1,3 @@
 # Socket Dice
 
-Connect using your preferred socket client and roll your to ~~a TPK~~ victory!
+Connect using your preferred socket client and roll your way to ~~a TPK~~ victory!
