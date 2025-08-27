@@ -93,7 +93,7 @@ class Server:
                 try:
                     i.sendall(f"{msg.encode('utf-8')}\n")
                 except:
-                    pass
+                    self.clients.pop(i, None)
 
     def set_name(self, addr, name):
         if addr in self.players:
