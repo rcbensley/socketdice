@@ -142,6 +142,17 @@ class Server:
     def rollstr(self, input):
         return " ".join(str(i) for i in self.roll(input))
     
+    def rollall(self, addr, input):
+        r = self.rollstr(input)
+        m = f"{self.pname(addr)} rolls {r}"
+        self.broadcast(m)
+
+    def rolldm(self, conn, add, input):
+        r = self.rollstr(input)
+        m = f"[TO DM], {self.pname(addr)} rolls {r}"
+        self.log(m)
+        conn.sendall(m + b"\n")
+    
     def cmd(self, msg):
         pass
 
@@ -174,11 +185,9 @@ class Server:
                 elif cmd == "/name":
                     self.set_name(addr, msg)
                 elif cmd == "/rolldm":
-                    roll = self.rollstr(msg)
-                    self.log(f"[TO DM], {self.pname} rolls {roll}")
+                    self.rolldm(msg)
                 elif cmd == "/roll":
-                    roll = self.rollstr(msg)
-                    conn.sendall(f"{self.pname(addr)} rolls {roll}\n".encode("utf-8"))
+                    self.broadcast(m)
                 else:
                     conn.sendall(COMMANDS)
         except ConnectionResetError:
