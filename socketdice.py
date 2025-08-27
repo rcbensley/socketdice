@@ -193,6 +193,9 @@ class Server:
         except ConnectionResetError:
             self.log(f"{addr} has rage quit")
         finally:
+            with self.lock:
+                if conn in self.clients:
+                    self.clients.pop(conn, None)
             conn.close()
             self.log(f"{addr} has gone back to reality")
 
