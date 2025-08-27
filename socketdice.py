@@ -9,12 +9,6 @@ import logging
 import argparse
 import threading
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
 COMMANDS = b"Accepted commands: /roll, /rolldm, /quit, /exit\n"
 
@@ -46,17 +40,41 @@ SERVER_INTROS = [
 
 CLIENT_INTROS = []
 
+def strip(s):
+    return re.sub(r"[^A-Za-z0-9 ]+", "", s)
 
 class Server:
     def __init__(self, name, host, port, password):
-        self.name = name
+        self.name = strip(name)
         self.host = host
         self.port = port
         self.password = password
-        self.server = None
         self.running = True
         self.players = {}
         self.names = {}
+        self.lock = threading.Lock()
+        self._init_log()
+
+    def _init_log(self):
+        log_file_name = self.name.replace(" ", "_")
+        self.logger = logging.getLogger("Socket Dice")
+        log_fmt = logging.Formatter(
+                f"%(asctime)s {self.name}: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S")
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(log_fmt)
+        file_handler = logging.FileHandler(
+                f"{log_file_name}.log",
+                mode="a",
+                encoding="utf-8")
+        file_handler.setFormatter(log_fmt)
+        self.logger.addHandler(stream_handler)
+        self.logger.addHandler(file_handler)
+        self.logger.setLevel(logging.INFO)
+
+
+    def log(self, msg):
+        self.logger.log(logging.INFO, msg)
 
     def _intro_client(self):
         return "client intro"
@@ -64,19 +82,24 @@ class Server:
     def _intro_server(self):
         i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS)-1)]
         return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
+    
+    def broadcast(self, msg):
+        with self.lock:
+            for i in self.clients:
+                continue
 
     def set_name(self, addr, name):
         if addr in self.players:
-            logging.info(f"{addr} already exists")
+            self.log(f"{addr} already exists")
             return
         name = " ".join(name)
-        n = re.sub(r"[^A-Za-z0-9 ]+", "", name)
+        n = strip(name)
         if n in self.names:
-            logging.info(f"{name} already exists")
+            self.log(f"{name} already exists")
             return
         self.players[addr] = n
         self.names[n] = addr
-        logging.info(f"Added player {n} from {addr}")
+        self.log(f"Added player {n} from {addr}")
 
     def pname(self, addr):
         if addr in self.players:
@@ -92,7 +115,7 @@ class Server:
         for i in input:
             match = ROLL_PATTERN.match(i.strip())
             if not match:
-                logging.info(f"Unknown roll format: {i}")
+                self.log(f"Unknown roll format: {i}")
                 continue
 
             num, sides, modifier = match.groups()
@@ -111,9 +134,15 @@ class Server:
     
     def rollstr(self, input):
         return " ".join(str(i) for i in self.roll(input))
+    
+    def cmd(self, msg):
+        pass
+
+    def client_remover(self, client):
+        pass
 
     def client_handler(self, conn, addr):
-        logging.info(f"{addr} has connected to the adventure")
+        self.log(f"{addr} has connected to the adventure")
         conn.sendall(b"Welcome to SOCKET DICE\n")
         conn.sendall(COMMANDS)
         try:
@@ -137,31 +166,31 @@ class Server:
                     self.set_name(addr, msg)
                 elif cmd == "/rolldm":
                     roll = self.rollstr(msg)
-                    logging.info(f"[TO DM], {self.pname} rolls {roll}")
+                    self.log(f"[TO DM], {self.pname} rolls {roll}")
                 elif cmd == "/roll":
                     roll = self.rollstr(msg)
                     conn.sendall(f"{self.pname(addr)} rolls {roll}\n".encode("utf-8"))
                 else:
                     conn.sendall(COMMANDS)
         except ConnectionResetError:
-            logging.info(f"{addr} has rage quit")
+            self.log(f"{addr} has rage quit")
         finally:
             conn.close()
-            logging.info(f"{addr} has gone back to reality")
+            self.log(f"{addr} has gone back to reality")
 
     def __call__(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((self.host, self.port))
         self.server.listen()
-        logging.info(self._intro_server())
+        self.log(self._intro_server())
         try:
             while self.running:
                 conn, addr = self.server.accept()
                 thread = threading.Thread(target=self.client_handler, args=(conn, addr))
                 thread.start()
-                logging.info(f"SOCKET DICE connections: {threading.active_count() - 1}")
+                self.log(f"SOCKET DICE connections: {threading.active_count() - 1}")
         except KeyboardInterrupt:
-            logging.info("\nSOCKET DICE has stopped")
+            self.log("\nSOCKET DICE has stopped")
         finally:
             self.server.close()
 
