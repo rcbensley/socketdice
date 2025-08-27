@@ -86,11 +86,14 @@ class Server:
     def _intro_server(self):
         i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS)-1)]
         return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
-    
+
     def broadcast(self, msg):
         with self.lock:
-            for i in self.clients:
-                continue
+            for i in self.clients.items():
+                try:
+                    i.sendall(f"{msg.encode('utf-8')}\n")
+                except:
+                    pass
 
     def set_name(self, addr, name):
         if addr in self.players:
@@ -147,6 +150,8 @@ class Server:
 
     def client_handler(self, conn, addr):
         self.log(f"{addr} has connected to the adventure")
+        with self.lock:
+            self.clients[conn] = conn
         conn.sendall(b"Welcome to SOCKET DICE\n")
         conn.sendall(COMMANDS)
         try:
