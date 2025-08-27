@@ -54,8 +54,7 @@ class Server:
         self.port = port
         self.password = password
         self.running = True
-        self.players = {}
-        self.names = {}
+        self.clients= {}
         self.lock = threading.Lock()
         self._init_log()
 
@@ -95,17 +94,17 @@ class Server:
                 except:
                     self.clients.pop(i, None)
 
-    def set_name(self, addr, name):
-        if addr in self.players:
+    def set_name(self, conn, addr, name):
+        if conn in self.players:
             self.log(f"{addr} already exists")
             return
         name = " ".join(name)
         n = strip(name)
-        if n in self.names:
-            self.log(f"{name} already exists")
-            return
-        self.players[addr] = n
-        self.names[n] = addr
+        for i in self.clients:
+            if self.clients[i]["name"] == n
+                self.log(f"{name} already exists")
+                return
+        self.clients[conn]["name"] = n
         self.log(f"Added player {n} from {addr}")
 
     def pname(self, addr):
@@ -153,16 +152,20 @@ class Server:
         self.log(m)
         conn.sendall(m + b"\n")
     
-    def cmd(self, msg):
-        pass
 
-    def client_remover(self, client):
-        pass
+    def client_add(self, conn, addr):
+        if conn in self.clients:
+            return
+        self.clients[conn] = {
+                "name": f"{addr[0]}:{addr[1]}",
+                "addr": addr,
+        }
+
 
     def client_handler(self, conn, addr):
         self.log(f"{addr} has connected to the adventure")
         with self.lock:
-            self.clients[conn] = conn
+            self.client_add(conn, addr)
         conn.sendall(b"Welcome to SOCKET DICE\n")
         conn.sendall(COMMANDS)
         try:
@@ -183,7 +186,7 @@ class Server:
                     conn.sendall(b"Farewell\n")
                     break
                 elif cmd == "/name":
-                    self.set_name(addr, msg)
+                    self.set_name(conn, addr, msg)
                 elif cmd == "/rolldm":
                     self.rolldm(msg)
                 elif cmd == "/roll":
