@@ -97,13 +97,13 @@ class Server:
                     self.log(f"broadcast error for {i}")
                     pass
 
-    def set_name(self, addr, conn, name):
+    def set_name(self, conn, addr, name):
         new_name = " ".join(name)
         new_name = strip(new_name)
         if new_name == name:
             return
         self.log(f"{addr} has changed their name from {name} to {new_name}")
-        self.clients[addr]["name"] = new_name
+        self.clients[self.client_key(addr)]["name"] = new_name
 
     def roll(self, input):
         if not input or len(input) == 0:
@@ -143,13 +143,16 @@ class Server:
         m = f"[TO DM], {self.pname(addr)} rolls {r}"
         self.log(m)
         conn.sendall(m + b"\n")
-    
+   
+    def client_key(self, addr):
+        return f"{addr[0]}:{addr[1]}"
 
     def client_add(self, conn, addr):
         if addr in self.clients:
             return
-        self.clients[addr] = {
-                "name": f"{addr[0]}:{addr[1]}",
+        n = self.client_key(addr)
+        self.clients[n] = {
+                "name": n,
                 "addr": addr,
                 "conn": conn,
         }
