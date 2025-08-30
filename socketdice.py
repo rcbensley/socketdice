@@ -88,30 +88,22 @@ class Server:
 
     def broadcast(self, msg):
         with self.lock:
-            for i in self.clients.items():
+            for i in self.clients:
                 try:
-                    i.sendall(f"{msg.encode('utf-8')}\n")
+                    m = msg.encode("utf-8")
+                    self.clients[i]["conn"].sendall(f"{m}\n")
                 except:
-                    self.clients.pop(i, None)
+                    #self.clients.pop(i, None)
+                    self.log(f"broadcast error for {i}")
+                    pass
 
-    def set_name(self, conn, addr, name):
-        if conn in self.players:
-            self.log(f"{addr} already exists")
+    def set_name(self, addr, conn, name):
+        new_name = " ".join(name)
+        new_name = strip(new_name)
+        if new_name == name:
             return
-        name = " ".join(name)
-        n = strip(name)
-        for i in self.clients:
-            if self.clients[i]["name"] == n
-                self.log(f"{name} already exists")
-                return
-        self.clients[conn]["name"] = n
-        self.log(f"Added player {n} from {addr}")
-
-    def pname(self, addr):
-        if addr in self.players:
-            return self.players[addr]
-        else:
-            return "UNKNOWN PLAYER"
+        self.log(f"{addr} has changed their name from {name} to {new_name}")
+        self.clients[addr]["name"] = new_name
 
     def roll(self, input):
         if not input or len(input) == 0:
@@ -154,12 +146,16 @@ class Server:
     
 
     def client_add(self, conn, addr):
-        if conn in self.clients:
+        if addr in self.clients:
             return
-        self.clients[conn] = {
+        self.clients[addr] = {
                 "name": f"{addr[0]}:{addr[1]}",
                 "addr": addr,
+                "conn": conn,
         }
+        self.log(f"Added client from {addr}")
+        for i in self.clients.items():
+            self.log(i)
 
 
     def client_handler(self, conn, addr):
