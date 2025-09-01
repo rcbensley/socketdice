@@ -149,7 +149,7 @@ class Server:
 
     def cmd_rolldm(self, key, msg):
         r = self.rollstr(msg)
-        m = f"[TO DM], {self.client_name()key)} rolls {r}"
+        m = f"[TO DM], {self.client_name(key)} rolls {r}"
         self.log(m)
         self.clients[key]["conn"].sendall(m + b"\n")
         return True
@@ -191,7 +191,7 @@ class Server:
                 if not m or len(m) == 0:
                     continue
 
-                cmd = m[0]
+                cmd = self.commands[m[0]]
                 msg = m[1:]
                 key = self.client_key(addr)
 
