@@ -154,7 +154,7 @@ class Server:
 
     def cmd_rolldm(self, key, msg):
         r = self.rollstr(msg)
-        m = f"[TO DM], {self.client_name(key)} rolls {r}"
+        m = f"[TO DM] {self.client_name(key)} rolls {r}".encode("utf-8")
         self.log(m)
         self.clients[key][client_conn].sendall(m + b"\n")
         return True
@@ -194,12 +194,12 @@ class Server:
                 if not m or len(m) == 0:
                     continue
 
-                func = m[0]
+                func = self.commands.get(m[0])
                 msg = m[1:]
                 key = self.client_key(addr)
 
-                if func in self.commands:
-                    self.commands[func](key, msg)
+                if func:
+                    func(key, msg)
                 else:
                     conn.sendall(COMMANDS)
         except ConnectionResetError:
