@@ -12,6 +12,10 @@ import threading
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
 COMMANDS = b"Accepted commands: /roll, /cmd_rolldm, /quit, /exit\n"
 
+client_name = "name"
+client_addr = "addr"
+client_conn = "conn"
+
 # Font from:
 # https://github.com/xero/figlet-fonts/blob/master/Bloody.flf
 # toilet -f Bloody "Socket Dice"
@@ -95,7 +99,7 @@ class Server:
             m = msg.encode("utf-8") + b"\n"
             for i in self.clients:
                 try:
-                    self.clients[i]["conn"].sendall(m)
+                    self.clients[i][client_conn].sendall(m)
                 except:
                     #self.clients.pop(i, None)
                     self.log(f"broadcast error for {i}")
@@ -106,8 +110,9 @@ class Server:
         new_name = strip(new_name)
         if new_name == name:
             return
-        self.log(f"{addr} has changed their name from {name} to {new_name}")
-        self.clients[key]["name"] = new_name
+        old_name = self.clients[key][client_name]
+        self.log(f"{key} has changed their name from {old_name} to {new_name}")
+        self.clients[key][client_name] = new_name
 
     def roll(self, msg):
         if not msg or len(msg) == 0:
@@ -135,7 +140,7 @@ class Server:
         return results
 
     def client_name(self, key):
-        return self.clients[key]["name"]
+        return self.clients[key][client_name]
     
     def rollstr(self, msg):
         r = self.roll(msg)
@@ -151,7 +156,7 @@ class Server:
         r = self.rollstr(msg)
         m = f"[TO DM], {self.client_name(key)} rolls {r}"
         self.log(m)
-        self.clients[key]["conn"].sendall(m + b"\n")
+        self.clients[key][client_conn].sendall(m + b"\n")
         return True
    
     def client_key(self, addr):
@@ -162,16 +167,14 @@ class Server:
             return
         n = self.client_key(addr)
         self.clients[n] = {
-                "name": n,
-                "addr": addr,
-                "conn": conn,
+                client_name: n,
+                client_addr: addr,
+                client_conn: conn,
         }
         self.log(f"Added client from {addr}")
-        for i in self.clients.items():
-            self.log(i)
 
     def cmd_exit(self, key, msg):
-        self.clients[key]["conn"].sendall(b"Farewell\n")
+        self.clients[key][client_conn].sendall(b"Farewell\n")
         return False
 
     def client_handler(self, conn, addr):
@@ -191,15 +194,14 @@ class Server:
                 if not m or len(m) == 0:
                     continue
 
-                cmd = self.commands[m[0]]
+                func = m[0]
                 msg = m[1:]
                 key = self.client_key(addr)
 
-                if cmd in self.commands:
-                    if not cmd(key,msg):
-                        break
-                    continue
-                conn.sendall(COMMANDS)
+                if func in self.commands:
+                    self.commands[func](key, msg)
+                else:
+                    conn.sendall(COMMANDS)
         except ConnectionResetError:
             self.log(f"{addr} has rage quit")
         finally:
@@ -224,6 +226,7 @@ class Server:
             self.log("\nSOCKET DICE has stopped")
         finally:
             self.server.close()
+            sys.exit()
 
 
 if __name__ == "__main__":
@@ -231,7 +234,7 @@ if __name__ == "__main__":
         "host": os.getenv("DICEHOST", "0.0.0.0"),
         "port": os.getenv("DICEPORT", 5001),
         "password": os.getenv("DICEPASS", ""),
-        "name": os.getenv("DICENAME", "Socket Dice Game"),
+        client_name: os.getenv("DICENAME", "Socket Dice Game"),
     }
     parser = argparse.ArgumentParser()
     for k, v in cfg.items():
@@ -241,7 +244,7 @@ if __name__ == "__main__":
     try:
         port = int(args.port)
     except (ValueError, TypeError):
-        logging.error(f"Unknown port value: {args.port}")
+        self.log(f"Unknown port value: {args.port}")
         sys.exit(1)
     server = Server(args.name, args.host, port, args.password)
     print(HEADER)
