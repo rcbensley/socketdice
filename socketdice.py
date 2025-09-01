@@ -10,7 +10,7 @@ import argparse
 import threading
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
-COMMANDS = b"Accepted commands: /roll, /rolldm, /quit, /exit\n"
+COMMANDS = b"Accepted commands: /roll, /cmd_rolldm, /quit, /exit\n"
 
 # Font from:
 # https://github.com/xero/figlet-fonts/blob/master/Bloody.flf
@@ -57,6 +57,11 @@ class Server:
         self.clients= {}
         self.lock = threading.Lock()
         self._init_log()
+        self.commands = {
+                "/roll": self.cmd_roll,
+                "/rolldm": self.cmd_rolldm,
+                "/name": self.cmd_name,
+        }
 
     def _init_log(self):
         log_file_name = self.name.replace(" ", "_")
@@ -75,7 +80,6 @@ class Server:
         self.logger.addHandler(file_handler)
         self.logger.setLevel(logging.INFO)
 
-
     def log(self, msg):
         self.logger.log(logging.INFO, msg)
 
@@ -88,29 +92,29 @@ class Server:
 
     def broadcast(self, msg):
         with self.lock:
+            m = msg.encode("utf-8") + b"\n"
             for i in self.clients:
                 try:
-                    m = msg.encode("utf-8")
-                    self.clients[i]["conn"].sendall(f"{m}\n")
+                    self.clients[i]["conn"].sendall(m)
                 except:
                     #self.clients.pop(i, None)
                     self.log(f"broadcast error for {i}")
                     pass
 
-    def set_name(self, conn, addr, name):
+    def cmd_name(self, key, name):
         new_name = " ".join(name)
         new_name = strip(new_name)
         if new_name == name:
             return
         self.log(f"{addr} has changed their name from {name} to {new_name}")
-        self.clients[self.client_key(addr)]["name"] = new_name
+        self.clients[key]["name"] = new_name
 
-    def roll(self, input):
-        if not input or len(input) == 0:
+    def roll(self, msg):
+        if not msg or len(msg) == 0:
             result = [random.randint(1, 20), ]
             return result
         results = []
-        for i in input:
+        for i in msg:
             match = ROLL_PATTERN.match(i.strip())
             if not match:
                 self.log(f"Unknown roll format: {i}")
@@ -129,20 +133,26 @@ class Server:
             results.append(total)
 
         return results
-    
-    def rollstr(self, input):
-        return " ".join(str(i) for i in self.roll(input))
-    
-    def rollall(self, addr, input):
-        r = self.rollstr(input)
-        m = f"{self.pname(addr)} rolls {r}"
-        self.broadcast(m)
 
-    def rolldm(self, conn, add, input):
-        r = self.rollstr(input)
-        m = f"[TO DM], {self.pname(addr)} rolls {r}"
+    def client_name(self, key):
+        return self.clients[key]["name"]
+    
+    def rollstr(self, msg):
+        r = self.roll(msg)
+        return " ".join(str(i) for i in r)
+    
+    def cmd_roll(self, key, msg):
+        r = self.rollstr(msg)
+        m = f"{self.clients[key]['name']} rolls {r}"
+        self.broadcast(m)
+        return True
+
+    def cmd_rolldm(self, key, msg):
+        r = self.rollstr(msg)
+        m = f"[TO DM], {self.client_name()key)} rolls {r}"
         self.log(m)
-        conn.sendall(m + b"\n")
+        self.clients[key]["conn"].sendall(m + b"\n")
+        return True
    
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
@@ -160,6 +170,9 @@ class Server:
         for i in self.clients.items():
             self.log(i)
 
+    def cmd_exit(self, key, msg):
+        self.clients[key]["conn"].sendall(b"Farewell\n")
+        return False
 
     def client_handler(self, conn, addr):
         self.log(f"{addr} has connected to the adventure")
@@ -171,7 +184,7 @@ class Server:
             while True:
                 data = conn.recv(1024).strip()
                 if not data:
-                    break  # Disconnect
+                    continue
 
                 full_message = data.decode("utf-8").lower()
                 m = full_message.split()
@@ -180,18 +193,13 @@ class Server:
 
                 cmd = m[0]
                 msg = m[1:]
+                key = self.client_key(addr)
 
-                if cmd in ("/exit", "/quit"):
-                    conn.sendall(b"Farewell\n")
-                    break
-                elif cmd == "/name":
-                    self.set_name(conn, addr, msg)
-                elif cmd == "/rolldm":
-                    self.rolldm(msg)
-                elif cmd == "/roll":
-                    self.broadcast(m)
-                else:
-                    conn.sendall(COMMANDS)
+                if cmd in self.commands:
+                    if not cmd(key,msg):
+                        break
+                    continue
+                conn.sendall(COMMANDS)
         except ConnectionResetError:
             self.log(f"{addr} has rage quit")
         finally:
