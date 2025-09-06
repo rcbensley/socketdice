@@ -5,16 +5,25 @@ import re
 import sys
 import socket
 import random
-import logging
+import sqlite3
 import argparse
 import threading
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
-COMMANDS = b"Accepted commands: /roll, /cmd_rolldm, /quit, /exit\n"
+COMMANDS = b"Accepted commands: /roll, /rolldm, /quit, /exit\n"
 
 client_name = "name"
 client_addr = "addr"
 client_conn = "conn"
+client_unknown = "unknown"
+dicelogger = "dicelogger"
+keys = {
+        "rolls": True,
+        "dm": True,
+        "msg": True,
+        "server": True,
+        "player": True
+}
 
 # Font from:
 # https://github.com/xero/figlet-fonts/blob/master/Bloody.flf
@@ -48,44 +57,75 @@ SERVER_INTROS = [
 
 CLIENT_INTROS = []
 
+
 def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
 
-class Server:
-    def __init__(self, name, host, port, password):
+
+class DiceLogger:
+    def __init__(self, name):
+        self.name = f"{name}.sqlite"
+        self.lock = threading.Lock()
+        self.conn = sqlite3.connect(self.name)
+        self.cur = self.conn.cursor()
+        self.create()
+
+
+    def query(self, sql):
+        with self.lock:
+            self.conn.execute(sql)
+            self.conn.commit()
+
+    def create(self):
+        table = f"""
+        CREATE TABLE IF NOT EXISTS {dicelogger} (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        dt DATETIME DEFAULT CURRENT_TIMESAMP,
+        player TEXT NOT NULL default "{client_unknown}",
+        key TEXT NOT NULL NOT NULL DEFAULT "rolls",
+        value TEXT NOT NULL
+        );
+        """
+        idx = """CREATE INDEX IF NOT EXISTS idx_dt ON dicelogger(dt)"""
+        with self.lock:
+            self.conn.execute("PRAGMA journal_mode=WAL;")
+            self.conn.execute("PRAGMA synchronous=NORMAL;")
+            self.conn.execute(table)
+            self.conn.execute(idx)
+            self.conn.commit()
+
+    def write(self, player: dict, key: str, value: str):
+        sql = f"INSERT INTO {dicelogger} (player, key, value) VALUES ({player}, {key}, {value});"
+        self.query(sql)
+
+
+class DiceServer:
+    def __init__(self, name, host, port, password, name_size=32, max_rolls=8):
         self.name = strip(name)
+        self.file_name = self.name.replace(" ", "_").lower()
         self.host = host
         self.port = port
         self.password = password
         self.running = True
         self.clients= {}
+        self.name_size = name_size
+        self.max_rolls = max_rolls
         self.lock = threading.Lock()
-        self._init_log()
         self.commands = {
                 "/roll": self.cmd_roll,
-                "/rolldm": self.cmd_rolldm,
+                "/dm": self.cmd_rolldm,
                 "/name": self.cmd_name,
         }
+        self.db = DiceLogger(self.file_name)
 
-    def _init_log(self):
-        log_file_name = self.name.replace(" ", "_")
-        self.logger = logging.getLogger("Socket Dice")
-        log_fmt = logging.Formatter(
-                f"%(asctime)s {self.name}: %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S")
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(log_fmt)
-        file_handler = logging.FileHandler(
-                f"{log_file_name}.log",
-                mode="a",
-                encoding="utf-8")
-        file_handler.setFormatter(log_fmt)
-        self.logger.addHandler(stream_handler)
-        self.logger.addHandler(file_handler)
-        self.logger.setLevel(logging.INFO)
-
+    def logger(self, player: str=client_unknown, key: str = "rolls", value: str = ""):
+        self.db.write(player, key, value)
+        msg = f"{self.client_name(player)} {key}: {value}"
+        print(msg)
+        return msg
+    
     def log(self, msg):
-        self.logger.log(logging.INFO, msg)
+        print(msg)
 
     def _intro_client(self):
         return "client intro"
@@ -107,7 +147,7 @@ class Server:
 
     def cmd_name(self, key, name):
         new_name = " ".join(name)
-        new_name = strip(new_name)
+        new_name = strip(new_name)[:self.name_size]
         if new_name == name:
             return
         old_name = self.clients[key][client_name]
@@ -137,27 +177,25 @@ class Server:
             total = sum(rolls) + modifier
             results.append(total)
 
-        return results
+        return results[:self.max_rolls]
 
     def client_name(self, key):
-        return self.clients[key][client_name]
+        return self.clients.get([key], {}).get(client_name, client_unknown)
     
     def rollstr(self, msg):
         r = self.roll(msg)
-        return " ".join(str(i) for i in r)
+        return ",".join(str(i) for i in r)
     
     def cmd_roll(self, key, msg):
         r = self.rollstr(msg)
-        m = f"{self.clients[key]['name']} rolls {r}"
+        m = self.log(self.client_name(key), "rolls", m)
         self.broadcast(m)
         return True
 
     def cmd_rolldm(self, key, msg):
         r = self.rollstr(msg)
-        m = f"[TO DM] {self.client_name(key)} rolls {r}".encode("utf-8")
-        self.log(m)
+        m = self.log(self.client_name[key], "dm", r)
         self.clients[key][client_conn].sendall(m + b"\n")
-        return True
    
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
@@ -246,6 +284,10 @@ if __name__ == "__main__":
     except (ValueError, TypeError):
         self.log(f"Unknown port value: {args.port}")
         sys.exit(1)
-    server = Server(args.name, args.host, port, args.password)
-    print(HEADER)
-    server()
+    try:
+        server = DiceServer(args.name, args.host, port, args.password)
+        print(HEADER)
+        server()
+    except Exception as e:
+        print(f"ERROR: {e}")
+        sys.exit(1)
