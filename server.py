@@ -73,7 +73,7 @@ class DiceServer:
     def logger(self, player: str=client_unknown, key: str = "rolls", value: str = ""):
         self.db.write(player, key, value)
         msg = f"{self.client_name(player)} {key}: {value}"
-        self.logger.logdice(msg)
+        self.logger.dice(msg)
         return msg
     
     def _intro_client(self):

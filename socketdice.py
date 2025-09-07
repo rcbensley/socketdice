@@ -3,7 +3,7 @@
 import os
 import sys
 import argparse
-from log import Log
+from log import ServerLog
 from server import DiceServer
 
 
