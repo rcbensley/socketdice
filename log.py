@@ -12,7 +12,7 @@ def dicelevel(self, message, *args, **kwargs):
 
 
 
-class Log:
+class ServerLog:
     def __init__(self, path: str=None):
         logging.addLevelName(DICELOGGER_LEVEL, "DICELOGGER")
         self.logger = logging.getLogger("Socket Dice")
