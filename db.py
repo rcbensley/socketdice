@@ -9,7 +9,7 @@ keys = {
         "player": True
 }
 
-class DiceLogger:
+class DB:
     def __init__(self, name, logger):
         self.name = f"{name}.sqlite"
         self.logger = logger
@@ -26,10 +26,10 @@ class DiceLogger:
 
     def create(self):
         table = f"""
-        CREATE TABLE IF NOT EXISTS {dicelogger} (
+        CREATE TABLE IF NOT EXISTS "dicelogger" (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         dt DATETIME DEFAULT CURRENT_TIMESAMP,
-        player TEXT NOT NULL default "{client_unknown}",
+        player TEXT NOT NULL default "client_unknown",
         key TEXT NOT NULL NOT NULL DEFAULT "rolls",
         value TEXT NOT NULL
         );

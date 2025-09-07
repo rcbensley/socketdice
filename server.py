@@ -1,8 +1,8 @@
+import re
 import random
 import socket
 import threading
-from common import strip
-from db import DiceLogger
+from db import DB
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
 
@@ -65,7 +65,7 @@ class DiceServer:
                 "/name": self.cmd_name,
         }
         self.logger = logger
-        self.db = DiceLogger(self.name.replace(" ", "_").lower())
+        self.db = DB(self.name.replace(" ", "_").lower(), self.logger)
 
     def help(self):
         return "Accepted commands: " + " ".join([str(i) for i in self.commands])
@@ -169,7 +169,7 @@ class DiceServer:
         with self.lock:
             self.client_add(conn, addr)
         conn.sendall(b"Welcome to SOCKET DICE\n")
-        conn.sendall(COMMANDS)
+        conn.sendall(self.help())
         try:
             while True:
                 data = conn.recv(1024).strip()
@@ -188,7 +188,7 @@ class DiceServer:
                 if func:
                     func(key, msg)
                 else:
-                    conn.sendall(COMMANDS)
+                    conn.sendall(self.help())
         except ConnectionResetError:
             self.logger.info(f"{addr} has rage quit")
         finally:
@@ -214,6 +214,6 @@ class DiceServer:
             self.logger.info("\nSOCKET DICE has stopped")
         finally:
             self.server.close()
-            sys.exit()
+            return False
 
 
