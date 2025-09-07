@@ -68,7 +68,7 @@ class DiceServer:
         self.db = DB(self.name.replace(" ", "_").lower(), self.logger)
 
     def help(self):
-        return "Accepted commands: " + " ".join([str(i) for i in self.commands])
+        return f"Accepted commands: {" ".join([str(i) for i in self.commands])}".encode("utf-8")
 
     def logger(self, player: str=client_unknown, key: str = "rolls", value: str = ""):
         self.db.write(player, key, value)
