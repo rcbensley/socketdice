@@ -3,6 +3,7 @@ import random
 import socket
 import threading
 from db import DB
+from log import ServerLog, DICELOGGER_LEVEL
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
 
@@ -64,18 +65,18 @@ class DiceServer:
                 "/dm": self.cmd_rolldm,
                 "/name": self.cmd_name,
         }
-        self.logger = logger
-        self.db = DB(self.name.replace(" ", "_").lower(), self.logger)
+        self.logger = ServerLog(self.name)
+        self.db = DB(self.name.replace(" ", "_").lower(), self.logger, self.lock)
 
     def help(self):
-        return f"Accepted commands: {" ".join([str(i) for i in self.commands])}".encode("utf-8")
+        return f"Accepted commands: {", ".join([str(i) for i in self.commands])}".encode("utf-8")
 
-    def logger(self, player: str=client_unknown, key: str = "rolls", value: str = ""):
+    def log(self, player: str=client_unknown, key: str = "rolls", value: str = ""):
         self.db.write(player, key, value)
         msg = f"{self.client_name(player)} {key}: {value}"
-        self.logger.dice(msg)
+        self.logger.log(DICELOGGER_LEVEL, msg)
         return msg
-    
+
     def _intro_client(self):
         return "client intro"
 
@@ -83,7 +84,7 @@ class DiceServer:
         i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS)-1)]
         return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
 
-    def broadcast(self, msg):
+    def broadcast(self, msg=""):
         with self.lock:
             m = msg.encode("utf-8") + b"\n"
             for i in self.clients:
@@ -129,23 +130,27 @@ class DiceServer:
         return results[:self.max_rolls]
 
     def client_name(self, key):
-        return self.clients.get([key], {}).get(client_name, client_unknown)
-    
+        return self.clients.get(key, {}).get(client_name, client_unknown)
+
+    def client_send(self, conn, msg):
+        conn.sendall(f"{msg}\n".encode("utf-8"))
+
     def rollstr(self, msg):
         r = self.roll(msg)
         return ",".join(str(i) for i in r)
-    
+
     def cmd_roll(self, key, msg):
         r = self.rollstr(msg)
-        m = self.logger.info(self.client_name(key), "rolls", m)
+        m = self.log(self.client_name(key), "rolls", r)
+        print(m)
         self.broadcast(m)
         return True
 
     def cmd_rolldm(self, key, msg):
         r = self.rollstr(msg)
-        m = self.logger.info(self.client_name[key], "dm", r)
-        self.clients[key][client_conn].sendall(m + b"\n")
-   
+        m = self.log(self.client_name(key), "dm", r)
+        self.client_send(self.clients[key][client_conn], m)
+
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
 
@@ -168,8 +173,10 @@ class DiceServer:
         self.logger.info(f"{addr} has connected to the adventure")
         with self.lock:
             self.client_add(conn, addr)
-        conn.sendall(b"Welcome to SOCKET DICE\n")
-        conn.sendall(self.help())
+        print(conn)
+        print(self.help())
+        self.client_send(conn, "Welcome to SOCKET DICE")
+        self.client_send(conn, self.help())
         try:
             while True:
                 data = conn.recv(1024).strip()
@@ -200,6 +207,7 @@ class DiceServer:
 
     def __call__(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.server.bind((self.host, self.port))
         self.server.listen()
         print(HEADER)
@@ -214,6 +222,3 @@ class DiceServer:
             self.logger.info("\nSOCKET DICE has stopped")
         finally:
             self.server.close()
-            return False
-
-

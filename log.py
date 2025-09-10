@@ -11,10 +11,9 @@ def dicelevel(self, message, *args, **kwargs):
         self._log(DICELOGGER_LEVEL, message, args, **kwargs)
 
 
-def ServerLog(path: str=None):
+def ServerLog(path: str):
         logging.addLevelName(DICELOGGER_LEVEL, "DICELOGGER")
         logger = logging.getLogger("Socket Dice")
-        logger.dice = dicelevel
         log_fmt = logging.Formatter(
                 f"%(asctime)s %(levelname)s: %(message)s",
                 datefmt="%Y-%m-%d %H:%M:%S")
@@ -22,12 +21,10 @@ def ServerLog(path: str=None):
         stream_handler.setFormatter(log_fmt)
         if path:
             file_handler = logging.FileHandler(
-                    path,
+                f"{path}.log",
                     mode="a",
                     encoding="utf-8")
             file_handler.setFormatter(log_fmt)
             logger.addHandler(stream_handler)
             logger.addHandler(file_handler)
         return logger
-
-

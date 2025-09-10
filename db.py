@@ -1,5 +1,4 @@
 import sqlite3
-import threading
 
 keys = {
         "rolls": True,
@@ -10,17 +9,17 @@ keys = {
 }
 
 class DB:
-    def __init__(self, name, logger):
+    def __init__(self, name, logger, lock):
         self.name = f"{name}.sqlite"
         self.logger = logger
-        self.lock = threading.Lock()
-        self.conn = sqlite3.connect(self.name)
-        self.cur = self.conn.cursor()
+        self.lock = lock
+        self.conn = sqlite3.connect(self.name, check_same_thread=False)
         self.create()
 
 
     def query(self, sql):
         with self.lock:
+            print(sql)
             self.conn.execute(sql)
             self.conn.commit()
 
@@ -29,7 +28,7 @@ class DB:
         CREATE TABLE IF NOT EXISTS "dicelogger" (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         dt DATETIME DEFAULT CURRENT_TIMESAMP,
-        player TEXT NOT NULL default "client_unknown",
+        player TEXT NOT NULL default "unknown",
         key TEXT NOT NULL NOT NULL DEFAULT "rolls",
         value TEXT NOT NULL
         );
@@ -42,6 +41,6 @@ class DB:
             self.conn.execute(idx)
             self.conn.commit()
 
-    def write(self, player: dict, key: str, value: str):
-        sql = f"INSERT INTO {dicelogger} (player, key, value) VALUES ({player}, {key}, {value});"
+    def write(self, player: str, key: str, value: str):
+        sql = f"INSERT INTO dicelogger (player, key, value) VALUES ('{player}', '{key}', '{value}');"
         self.query(sql)
