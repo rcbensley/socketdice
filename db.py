@@ -24,7 +24,7 @@ class DB:
             self.conn.commit()
 
     def create(self):
-        table = f"""
+        table = """
         CREATE TABLE IF NOT EXISTS "dicelogger" (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         dt DATETIME DEFAULT CURRENT_TIMESAMP,

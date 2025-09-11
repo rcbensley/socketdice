@@ -130,14 +130,10 @@ class DiceServer:
         return results[:self.max_rolls]
 
     def client_name(self, key):
-<<<<<<< HEAD
         return self.clients.get(key, {}).get(client_name, client_unknown)
 
     def client_send(self, conn, msg):
         conn.sendall(f"{msg}\n".encode("utf-8"))
-=======
-        return self.clients.get([key], {}).get(client_name, client_unknown)
->>>>>>> 8a578d0 (class change)
 
     def rollstr(self, msg):
         r = self.roll(msg)
@@ -226,7 +222,3 @@ class DiceServer:
             self.logger.info("\nSOCKET DICE has stopped")
         finally:
             self.server.close()
-<<<<<<< HEAD
-=======
-            return False
->>>>>>> 8a578d0 (class change)
