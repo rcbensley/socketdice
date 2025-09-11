@@ -19,7 +19,6 @@ class DB:
 
     def query(self, sql):
         with self.lock:
-            print(sql)
             self.conn.execute(sql)
             self.conn.commit()
 

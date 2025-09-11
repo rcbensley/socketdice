@@ -3,7 +3,6 @@
 import os
 import sys
 import argparse
-from log import ServerLog
 from server import DiceServer
 
 
@@ -19,14 +18,13 @@ if __name__ == "__main__":
     for k, v in cfg.items():
         parser.add_argument(f"--{k}", default=v)
     args = parser.parse_args()
-    logger = ServerLog(args.log)
     try:
         port = int(args.port)
     except (ValueError, TypeError):
-        logger.info(f"Unknown port value: {args.port}")
+        print(f"Unknown port value: {args.port}")
         sys.exit(1)
     try:
-        server = DiceServer(args.name, args.host, port, args.password, logger)
+        server = DiceServer(args.name, args.host, port, args.password)
         server()
     except Exception as e:
         print(f"ERROR: {e}")
