@@ -5,6 +5,7 @@ import re
 import sys
 import select
 import socket
+import uuid
 
 def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
@@ -17,7 +18,8 @@ def main(host, port, username, password):
     sock.connect((host,port))
     sock.setblocking(False)
     username, password = username.strip(), password.strip()
-    auth_str = f"/login\t{username}\t{password}"
+    my_id = str(uuid.uuid1())
+    auth_str = f"/login||{username}||{my_id}||{password}"
     sock.sendall(msg(auth_str))
     print("Connected")
 

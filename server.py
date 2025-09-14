@@ -1,9 +1,11 @@
+import os
 import re
 import sys
 import random
 import socket
 import logging
 import threading
+from pathlib import Path
 from db import DB
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
@@ -51,13 +53,14 @@ def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
 
 class DiceServer:
-    def __init__(self, name, host, port, password=None, name_size=32, max_rolls=8):
+    def __init__(self, name, host, port, password=None, reset=False, name_size=32, max_rolls=8):
         self.name = strip(name)
         self.host = host
         self.port = port
         self.password = password
         self.running = True
-        self.clients= {}
+        self.clients = {}
+        self.ids = {}
         self.name_size = name_size
         self.max_rolls = max_rolls
         self.lock = threading.Lock()
@@ -66,34 +69,33 @@ class DiceServer:
                 "/dm": self.cmd_rolldm,
                 "/name": self.cmd_name,
         }
-        self._init_log()
-        self.db = DB(self.name.replace(" ", "_").lower(), self.logger, self.lock)
+        self.logger = self._init_log(reset)
+        self.db = DB(self.name.replace(" ", "_").lower(), self.logger, self.lock, reset)
 
-    def _init_log(self):
-        log_file_name = self.name.replace(" ", "_")
-        self.logger = logging.getLogger("Socket Dice")
+    def _init_log(self, reset=False):
+        log_file_name = f"{self.name.replace(" ", "_")}.log"
+        log_file_path = Path(log_file_name).expanduser()
+        if log_file_path.exists() and reset:
+            if log_file_path.exists() and reset:
+                os.remove(log_file_path)
+        logger = logging.getLogger("Socket Dice")
         log_fmt = logging.Formatter(
                 f"%(asctime)s {self.name}: %(message)s",
                 datefmt="%Y-%m-%d %H:%M:%S")
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(log_fmt)
         file_handler = logging.FileHandler(
-                f"{log_file_name}.log",
+                log_file_path,
                 mode="a",
                 encoding="utf-8")
         file_handler.setFormatter(log_fmt)
-        self.logger.addHandler(stream_handler)
-        self.logger.addHandler(file_handler)
-        self.logger.setLevel(logging.INFO)
+        logger.addHandler(stream_handler)
+        logger.addHandler(file_handler)
+        logger.setLevel(logging.INFO)
+        return logger
 
     def help(self):
         return f"Accepted commands: {", ".join([str(i) for i in self.commands])}".encode("utf-8")
-
-    def log(self, player: str=client_unknown, key: str = "rolls", value: str = ""):
-        self.db.write(player, key, value)
-        msg = f"{self.client_name(player)} {key}: {value}"
-        self.logger.info(msg)
-        return msg
 
     def _intro_client(self):
         return "client intro"
@@ -149,8 +151,9 @@ class DiceServer:
 
     def client_name(self, key):
         if key in self.clients:
-            return self.clients[key][client_name]
-        return client_unknown
+            pn = self.clients[key][client_name]
+            return pn
+        self.logger.warning(f"client_name not found for {key} in {self.clients}")
 
     def client_send(self, conn, msg):
         conn.sendall(f"{msg}\n".encode("utf-8"))
@@ -159,23 +162,30 @@ class DiceServer:
         r = self.roll(msg)
         return ",".join(str(i) for i in r)
 
-    def cmd_roll(self, key, msg):
-        r = self.rollstr(msg)
-        m = self.log(self.client_name(key), "rolls", r)
-        self.broadcast(m)
-        return True
+    def cmd_roll(self, key, msg, dm=False):
+        result = self.rollstr(msg)
+        name = self.client_name(key)
+        to = "DM" if dm else "ALL"
+        log_msg = f"{to}: {name} rolls {result}"
+        self.logger.info(log_msg)
+        self.db.write(client=name, channel=to, msg=log_msg)
+        if not dm:
+            self.broadcast(log_msg)
+        return result
 
     def cmd_rolldm(self, key, msg):
-        r = self.rollstr(msg)
-        m = self.log(self.client_name(key), "dm", r)
-        self.client_send(self.clients[key][client_conn], m)
+        self.cmd_roll(key, msg, True)
 
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
 
-    def client_add(self, conn, addr, name="unknown"):
+    def client_add(self, conn, addr, name, client_id):
         with self.lock:
             if addr in self.clients:
+                self.logger.info(f"Address {addr} already exists for id {client_id}")
+                return
+            if client_id in self.ids:
+                self.logger.info(f"Client ID {client_id} already exists for address {self.ids[client_id]}")
                 return
             k = self.client_key(addr)
             self.clients[k] = {
@@ -183,32 +193,38 @@ class DiceServer:
                     client_addr: addr,
                     client_conn: conn,
             }
-            self.logger.info(f"Added client from {addr}")
+            self.ids[client_id] = k
+            self.logger.info(f"Added client {k} from {addr} with ID of {client_id}")
 
     def cmd_exit(self, key, msg):
         self.clients[key][client_conn].sendall(b"Farewell\n")
         return False
 
-    def client_auth(self, conn, addr, msg):
+    def client_auth(self, conn, addr):
         if addr in self.clients:
             return True
         data = conn.recv(1024).decode("utf-8").strip()
         if not data.startswith("/login"):
             return False
 
-        login = data.split("\t")
-        name = login[1]
-        if self.password and len(login) == 3:
-            password = login[2]
+        login = data.split("||")
+        if self.password and len(login) == 4:
+            password = login[4]
             if password != self.password:
+                self.logger.info(f"Wrong password {password}, from {name}@{addr}")
                 return False
-        self.client_add(conn, addr, name)
+        name = login[1]
+        client_id = login[2]
+        self.client_add(conn, addr, name, client_id)
         self.logger.info(f"{addr} has connected to the adventure")
         self.client_send(conn, "Welcome to SOCKET DICE")
         self.client_send(conn, self.help())
         return True
 
     def client_handler(self, conn, addr):
+        auth_ok = self.client_auth(conn, addr)
+        if not auth_ok:
+            return
         try:
             while True:
                 data = conn.recv(1024).decode("utf-8").strip()
