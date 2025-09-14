@@ -215,6 +215,7 @@ class DiceServer:
                 return False
         name = login[1]
         client_id = login[2]
+        print(login)
         self.client_add(conn, addr, name, client_id)
         self.logger.info(f"{addr} has connected to the adventure")
         self.client_send(conn, "Welcome to SOCKET DICE")

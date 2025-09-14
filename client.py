@@ -23,30 +23,32 @@ def main(host, port, username, password):
     print("Connected")
 
     while True:
-        read, _, _ = select.select([sock, sys.stdin], [], [])
+        try:
+            read, _, _ = select.select([sock, sys.stdin], [], [])
 
-        for i in read:
-            if i is socket:
-                try:
-                    data = sock.recv(1024)
-                    if not data:
-                        print("closed")
+            for i in read:
+                if i is socket:
+                    try:
+                        data = sock.recv(1024)
+                        if not data:
+                            print("closed")
+                            sock.close()
+                            sys.exit()
+                        print(data.decode("utf-8").strip())
+                    except Exception as e:
+                        print(f"ERROR: {e}")
                         sock.close()
                         sys.exit()
-                    print("Decoding:")
-                    print(data.decode("utf-8").strip())
-                except Exception as e:
-                    print(f"ERROR: {e}")
-                    sock.close()
-                    sys.exit()
-            elif i is sys.stdin:
-                m = msg(sys.stdin.readline().strip())
-                print(f"Sending:{str(m)}")
-                if m.lower().startswith(b"/quit"):
-                    print("Quitting")
-                    sock.close()
-                    sys.exit()
-                sock.sendall(m)
+                elif i is sys.stdin:
+                    m = msg(sys.stdin.readline().strip())
+                    if m.lower().startswith(b"/quit"):
+                        print("Quitting")
+                        sock.close()
+                        sys.exit()
+                    sock.sendall(m)
+        except KeyboardInterrupt :
+            sock.close()
+            sys.exit()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
