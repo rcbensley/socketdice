@@ -51,7 +51,7 @@ def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
 
 class DiceServer:
-    def __init__(self, name, host, port, password, name_size=32, max_rolls=8):
+    def __init__(self, name, host, port, password=None, name_size=32, max_rolls=8):
         self.name = strip(name)
         self.host = host
         self.port = port
@@ -173,27 +173,42 @@ class DiceServer:
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
 
-    def client_add(self, conn, addr):
-        if addr in self.clients:
-            return
-        n = self.client_key(addr)
-        self.clients[n] = {
-                client_name: n,
-                client_addr: addr,
-                client_conn: conn,
-        }
-        self.logger.info(f"Added client from {addr}")
+    def client_add(self, conn, addr, name="unknown"):
+        with self.lock:
+            if addr in self.clients:
+                return
+            k = self.client_key(addr)
+            self.clients[k] = {
+                    client_name: name,
+                    client_addr: addr,
+                    client_conn: conn,
+            }
+            self.logger.info(f"Added client from {addr}")
 
     def cmd_exit(self, key, msg):
         self.clients[key][client_conn].sendall(b"Farewell\n")
         return False
 
-    def client_handler(self, conn, addr):
+    def client_auth(self, conn, addr, msg):
+        if addr in self.clients:
+            return True
+        data = conn.recv(1024).decode("utf-8").strip()
+        if not data.startswith("/login"):
+            return False
+
+        login = data.split("\t")
+        name = login[1]
+        if self.password and len(login) == 3:
+            password = login[2]
+            if password != self.password:
+                return False
+        self.client_add(conn, addr, name)
         self.logger.info(f"{addr} has connected to the adventure")
-        with self.lock:
-            self.client_add(conn, addr)
         self.client_send(conn, "Welcome to SOCKET DICE")
         self.client_send(conn, self.help())
+        return True
+
+    def client_handler(self, conn, addr):
         try:
             while True:
                 data = conn.recv(1024).decode("utf-8").strip()
