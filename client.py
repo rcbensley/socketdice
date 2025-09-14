@@ -3,15 +3,13 @@
 import os
 import re
 import sys
+import uuid
 import select
 import socket
-import uuid
-
-def strip(s):
-    return re.sub(r"[^A-Za-z0-9 ]+", "", s)
+import argparse
 
 def msg(m):
-    f"{m}\n".encode("utf-8")
+    return f"{m}\n".encode("utf-8")
 
 def main(host, port, username, password):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,8 +17,9 @@ def main(host, port, username, password):
     sock.setblocking(False)
     username, password = username.strip(), password.strip()
     my_id = str(uuid.uuid1())
-    auth_str = f"/login||{username}||{my_id}||{password}"
-    sock.sendall(msg(auth_str))
+    auth_data = [i for i in ["/login", username, my_id, password] if i]
+    auth_str = msg("||".join(auth_data))
+    sock.sendall(auth_str)
     print("Connected")
 
     while True:
@@ -34,6 +33,7 @@ def main(host, port, username, password):
                         print("closed")
                         sock.close()
                         sys.exit()
+                    print("Decoding:")
                     print(data.decode("utf-8").strip())
                 except Exception as e:
                     print(f"ERROR: {e}")
@@ -41,22 +41,19 @@ def main(host, port, username, password):
                     sys.exit()
             elif i is sys.stdin:
                 m = msg(sys.stdin.readline().strip())
-                if m.lower().startswith("/quit"):
+                print(f"Sending:{str(m)}")
+                if m.lower().startswith(b"/quit"):
                     print("Quitting")
                     sock.close()
                     sys.exit()
                 sock.sendall(m)
 
 if __name__ == "__main__":
-    cfg = {
-        "host": os.getenv("DICEHOST", "127.0.0.1"),
-        "port": os.getenv("DICEPORT", 5001),
-        "username": os.getenv("DICEUSER", ""),
-        "password": os.getenv("DICEPASS", ""),
-    }
     parser = argparse.ArgumentParser()
-    for k, v in cfg.items():
-        parser.add_argument(f"--{k}", default=v)
+    parser.add_argument("-H","--host",default="127.0.0.1")
+    parser.add_argument("-P","--port",default=5001)
+    parser.add_argument("-u","--username",default="unknown")
+    parser.add_argument("-p","--password",default="")
     args = parser.parse_args()
 
     main(args.host, args.port, args.username, args.password)

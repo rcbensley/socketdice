@@ -225,6 +225,7 @@ class DiceServer:
         auth_ok = self.client_auth(conn, addr)
         if not auth_ok:
             return
+        conn.sendall(b"ok\n")
         try:
             while True:
                 data = conn.recv(1024).decode("utf-8").strip()
