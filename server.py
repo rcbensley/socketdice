@@ -196,11 +196,11 @@ class DiceServer:
         self.client_send(conn, self.help())
         try:
             while True:
-                data = conn.recv(1024).strip()
+                data = conn.recv(1024).decode("utf-8").strip()
                 if not data:
                     continue
 
-                full_message = data.decode("utf-8").lower()
+                full_message = data.lower()
                 m = full_message.split()
                 if not m or len(m) == 0:
                     continue
