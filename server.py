@@ -19,7 +19,7 @@ dicelogger = "dicelogger"
 # Font from:
 # https://github.com/xero/figlet-fonts/blob/master/Bloody.flf
 # toilet -f Bloody "Socket Dice"
-HEADER="""
+HEADER = """
   ██████▒█████ ▄████▄ ██ ▄█▓████▄▄▄████  ▓█████▄ ██▓▄████▄▓█████
 ▒██    ▒██▒  █▒██▀ ▀█ ██▄█▒▓█   ▓  ██▒   ▒██▀ ██▓██▒██▀ ▀█▓█   ▀
 ░ ▓██▄ ▒██░  █▒▓█    ▓███▄░▒███ ▒ ▓██░   ░██   █▒██▒▓█    ▒███
@@ -52,8 +52,11 @@ CLIENT_INTROS = []
 def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
 
+
 class DiceServer:
-    def __init__(self, name, host, port, password=None, reset=False, name_size=32, max_rolls=8):
+    def __init__(
+        self, name, host, port, password=None, reset=False, name_size=32, max_rolls=8
+    ):
         self.name = strip(name)
         self.host = host
         self.port = port
@@ -65,9 +68,9 @@ class DiceServer:
         self.max_rolls = max_rolls
         self.lock = threading.Lock()
         self.commands = {
-                "/roll": self.cmd_roll,
-                "/dm": self.cmd_rolldm,
-                "/name": self.cmd_name,
+            "/roll": self.cmd_roll,
+            "/dm": self.cmd_rolldm,
+            "/name": self.cmd_name,
         }
         self.logger = self._init_log(reset)
         self.db = DB(self.name.replace(" ", "_").lower(), self.logger, self.lock, reset)
@@ -80,14 +83,11 @@ class DiceServer:
                 os.remove(log_file_path)
         logger = logging.getLogger("Socket Dice")
         log_fmt = logging.Formatter(
-                f"%(asctime)s {self.name}: %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S")
+            f"%(asctime)s {self.name}: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        )
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(log_fmt)
-        file_handler = logging.FileHandler(
-                log_file_path,
-                mode="a",
-                encoding="utf-8")
+        file_handler = logging.FileHandler(log_file_path, mode="a", encoding="utf-8")
         file_handler.setFormatter(log_fmt)
         logger.addHandler(stream_handler)
         logger.addHandler(file_handler)
@@ -95,13 +95,17 @@ class DiceServer:
         return logger
 
     def help(self):
-        return f"Accepted commands: {", ".join([str(i) for i in self.commands])}".encode("utf-8")
+        return (
+            f"Accepted commands: {", ".join([str(i) for i in self.commands])}".encode(
+                "utf-8"
+            )
+        )
 
     def _intro_client(self):
         return "client intro"
 
     def _intro_server(self):
-        i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS)-1)]
+        i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS) - 1)]
         return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
 
     def broadcast(self, msg=""):
@@ -110,14 +114,14 @@ class DiceServer:
             for i in self.clients:
                 try:
                     self.clients[i][client_conn].sendall(m)
-                except:
-                    #self.clients.pop(i, None)
-                    self.logger.info(f"broadcast error for {i}")
+                except Exception as e:
+                    # self.clients.pop(i, None)
+                    self.logger.info(f"broadcast error for {i}: {e}")
                     pass
 
     def cmd_name(self, key, name):
         new_name = " ".join(name)
-        new_name = strip(new_name)[:self.name_size]
+        new_name = strip(new_name)[: self.name_size]
         old_name = self.client_name(key)
         if new_name == old_name:
             return
@@ -126,7 +130,9 @@ class DiceServer:
 
     def roll(self, msg):
         if not msg or len(msg) == 0:
-            result = [random.randint(1, 20), ]
+            result = [
+                random.randint(1, 20),
+            ]
             return result
         results = []
         for i in msg:
@@ -147,7 +153,7 @@ class DiceServer:
             total = sum(rolls) + modifier
             results.append(total)
 
-        return results[:self.max_rolls]
+        return results[: self.max_rolls]
 
     def client_name(self, key):
         if key in self.clients:
@@ -185,13 +191,15 @@ class DiceServer:
                 self.logger.info(f"Address {addr} already exists for id {client_id}")
                 return
             if client_id in self.ids:
-                self.logger.info(f"Client ID {client_id} already exists for address {self.ids[client_id]}")
+                self.logger.info(
+                    f"Client ID {client_id} already exists for address {self.ids[client_id]}"
+                )
                 return
             k = self.client_key(addr)
             self.clients[k] = {
-                    client_name: name,
-                    client_addr: addr,
-                    client_conn: conn,
+                client_name: name,
+                client_addr: addr,
+                client_conn: conn,
             }
             self.ids[client_id] = k
             self.logger.info(f"Added client {k} from {addr} with ID of {client_id}")
@@ -207,15 +215,14 @@ class DiceServer:
         if not data.startswith("/login"):
             return False
 
-        login = data.split("||")
+        login = data.split("||", 5)
+        name = login[1]
+        client_id = login[2]
         if self.password and len(login) == 4:
             password = login[4]
             if password != self.password:
                 self.logger.info(f"Wrong password {password}, from {name}@{addr}")
                 return False
-        name = login[1]
-        client_id = login[2]
-        print(login)
         self.client_add(conn, addr, name, client_id)
         self.logger.info(f"{addr} has connected to the adventure")
         self.client_send(conn, "Welcome to SOCKET DICE")
@@ -267,7 +274,9 @@ class DiceServer:
                 conn, addr = self.server.accept()
                 thread = threading.Thread(target=self.client_handler, args=(conn, addr))
                 thread.start()
-                self.logger.info(f"SOCKET DICE connections: {threading.active_count() - 1}")
+                self.logger.info(
+                    f"SOCKET DICE connections: {threading.active_count() - 1}"
+                )
         except KeyboardInterrupt:
             self.logger.info("\nSOCKET DICE has stopped")
             self.server.close()
