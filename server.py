@@ -1,20 +1,14 @@
+#!/usr/bin/env python3
+
+import argparse
 import os
-import re
-import sys
 import random
+import re
 import socket
-import logging
+import sys
 import threading
-from pathlib import Path
-from db import DB
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
-
-client_name = "name"
-client_addr = "addr"
-client_conn = "conn"
-client_unknown = "unknown"
-dicelogger = "dicelogger"
 
 # Font from:
 # https://github.com/xero/figlet-fonts/blob/master/Bloody.flf
@@ -46,8 +40,6 @@ SERVER_INTROS = [
     "these amateurs to just meta it",
 ]
 
-CLIENT_INTROS = []
-
 
 def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
@@ -55,16 +47,14 @@ def strip(s):
 
 class DiceServer:
     def __init__(
-        self, name, host, port, password=None, reset=False, name_size=32, max_rolls=8
+        self, name: str, host: str, port: int, password: str = None, max_rolls=8
     ):
         self.name = strip(name)
         self.host = host
         self.port = port
         self.password = password
-        self.running = True
         self.clients = {}
         self.ids = {}
-        self.name_size = name_size
         self.max_rolls = max_rolls
         self.lock = threading.Lock()
         self.commands = {
@@ -72,37 +62,15 @@ class DiceServer:
             "/dm": self.cmd_rolldm,
             "/name": self.cmd_name,
         }
-        self.logger = self._init_log(reset)
-        self.db = DB(self.name.replace(" ", "_").lower(), self.logger, self.lock, reset)
 
-    def _init_log(self, reset=False):
-        log_file_name = f"{self.name.replace(" ", "_")}.log"
-        log_file_path = Path(log_file_name).expanduser()
-        if log_file_path.exists() and reset:
-            if log_file_path.exists() and reset:
-                os.remove(log_file_path)
-        logger = logging.getLogger("Socket Dice")
-        log_fmt = logging.Formatter(
-            f"%(asctime)s {self.name}: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-        )
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(log_fmt)
-        file_handler = logging.FileHandler(log_file_path, mode="a", encoding="utf-8")
-        file_handler.setFormatter(log_fmt)
-        logger.addHandler(stream_handler)
-        logger.addHandler(file_handler)
-        logger.setLevel(logging.INFO)
-        return logger
+    def log(self, level: str, message: str):
+        print(f"{level}\t{message}")
 
-    def help(self):
-        return (
-            f"Accepted commands: {", ".join([str(i) for i in self.commands])}".encode(
-                "utf-8"
-            )
-        )
+    def err(self, message: str):
+        self.log("ERROR", message)
 
-    def _intro_client(self):
-        return "client intro"
+    def info(self, message: str):
+        self.log("INFO", message)
 
     def _intro_server(self):
         i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS) - 1)]
@@ -113,20 +81,17 @@ class DiceServer:
             m = msg.encode("utf-8") + b"\n"
             for i in self.clients:
                 try:
-                    self.clients[i][client_conn].sendall(m)
+                    self.clients[i]["conn"].sendall(m)
                 except Exception as e:
-                    # self.clients.pop(i, None)
-                    self.logger.info(f"broadcast error for {i}: {e}")
-                    pass
+                    self.err(f"broadcast error for {i}: {e}")
 
     def cmd_name(self, key, name):
         new_name = " ".join(name)
-        new_name = strip(new_name)[: self.name_size]
         old_name = self.client_name(key)
         if new_name == old_name:
             return
-        self.logger.info(f"{key} has changed their name from {old_name} to {new_name}")
-        self.clients[key][client_name] = new_name
+        self.info(f"{key} has changed their name from {old_name} to {new_name}")
+        self.clients[key]["name"] = new_name
 
     def roll(self, msg):
         if not msg or len(msg) == 0:
@@ -138,7 +103,7 @@ class DiceServer:
         for i in msg:
             match = ROLL_PATTERN.match(i.strip())
             if not match:
-                self.logger.info(f"Unknown roll format: {i}")
+                self.err(f"Unknown roll format: {i}")
                 continue
 
             num, sides, modifier = match.groups()
@@ -152,14 +117,14 @@ class DiceServer:
             rolls = [random.randint(1, sides) for _ in range(num)]
             total = sum(rolls) + modifier
             results.append(total)
-
         return results[: self.max_rolls]
 
-    def client_name(self, key):
+    def client_name(self, key: str):
         if key in self.clients:
-            pn = self.clients[key][client_name]
+            pn = self.clients[key]["name"]
             return pn
-        self.logger.warning(f"client_name not found for {key} in {self.clients}")
+        self.err(f"client_name not found for {key} in {self.clients}")
+        return False
 
     def client_send(self, conn, msg):
         conn.sendall(f"{msg}\n".encode("utf-8"))
@@ -173,8 +138,7 @@ class DiceServer:
         name = self.client_name(key)
         to = "DM" if dm else "ALL"
         log_msg = f"{to}: {name} rolls {result}"
-        self.logger.info(log_msg)
-        self.db.write(client=name, channel=to, msg=log_msg)
+        self.log("ROLL", log_msg)
         if not dm:
             self.broadcast(log_msg)
         return result
@@ -188,24 +152,24 @@ class DiceServer:
     def client_add(self, conn, addr, name, client_id):
         with self.lock:
             if addr in self.clients:
-                self.logger.info(f"Address {addr} already exists for id {client_id}")
+                self.err(f"Address {addr} already exists for id {client_id}")
                 return
             if client_id in self.ids:
-                self.logger.info(
+                self.info(
                     f"Client ID {client_id} already exists for address {self.ids[client_id]}"
                 )
                 return
-            k = self.client_key(addr)
-            self.clients[k] = {
-                client_name: name,
-                client_addr: addr,
-                client_conn: conn,
+            c = self.client_key(addr)
+            self.clients[c] = {
+                "name": name,
+                "addr": addr,
+                "conn": conn,
             }
-            self.ids[client_id] = k
-            self.logger.info(f"Added client {k} from {addr} with ID of {client_id}")
+            self.ids[client_id] = c
+            self.info(f"Added client {c} from {addr} with ID of {client_id}")
 
-    def cmd_exit(self, key, msg):
-        self.clients[key][client_conn].sendall(b"Farewell\n")
+    def cmd_exit(self, key):
+        self.clients[key]["conn"].sendall(b"Farewell\n")
         return False
 
     def client_auth(self, conn, addr):
@@ -221,12 +185,10 @@ class DiceServer:
         if self.password and len(login) == 4:
             password = login[4]
             if password != self.password:
-                self.logger.info(f"Wrong password {password}, from {name}@{addr}")
+                self.err(f"Wrong password {password}, from {name}@{addr}")
                 return False
         self.client_add(conn, addr, name, client_id)
-        self.logger.info(f"{addr} has connected to the adventure")
-        self.client_send(conn, "Welcome to SOCKET DICE")
-        self.client_send(conn, self.help())
+        self.info(f"{addr} has connected to the adventure")
         return True
 
     def client_handler(self, conn, addr):
@@ -251,36 +213,69 @@ class DiceServer:
 
                 if func:
                     func(key, msg)
-                else:
-                    conn.sendall(self.help())
         except ConnectionResetError:
-            self.logger.info(f"{addr} has rage quit")
+            self.info(f"{addr} has rage quit")
         finally:
             with self.lock:
                 if conn in self.clients:
                     self.clients.pop(conn, None)
             conn.close()
-            self.logger.info(f"{addr} has gone back to reality")
+            self.info(f"{addr} has gone back to reality")
 
     def __call__(self):
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.bind((self.host, self.port))
-        self.server.listen()
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server.bind((self.host, self.port))
+        server.listen()
         print(HEADER)
-        self.logger.info(self._intro_server())
+        self.info(self._intro_server())
         try:
-            while self.running:
-                conn, addr = self.server.accept()
+            while True:
+                conn, addr = server.accept()
                 thread = threading.Thread(target=self.client_handler, args=(conn, addr))
                 thread.start()
-                self.logger.info(
-                    f"SOCKET DICE connections: {threading.active_count() - 1}"
-                )
+                self.info(f"SOCKET DICE connections: {threading.active_count() - 1}")
         except KeyboardInterrupt:
-            self.logger.info("\nSOCKET DICE has stopped")
-            self.server.close()
+            self.info("\nSOCKET DICE has stopped")
+            server.close()
             sys.exit(0)
         finally:
-            self.server.close()
+            server.close()
             sys.exit(0)
+
+
+if __name__ == "__main__":
+    cfg = {
+        "host": os.getenv("DICEHOST", "0.0.0.0"),
+        "port": os.getenv("DICEPORT", "5001"),
+        "password": os.getenv("DICEPASS", ""),
+        "name": os.getenv("DICENAME", "Socket Dice Game"),
+        "log": os.getenv("DICELOG", None),
+    }
+    parser = argparse.ArgumentParser()
+    for k, v in cfg.items():
+        parser.add_argument(f"--{k}", default=v)
+    parser.add_argument(
+        "-r",
+        "--reset",
+        action="store_true",
+        default=False,
+        help="Reset the database and overwrite the log",
+    )
+    args = parser.parse_args()
+    try:
+        port = int(args.port)
+    except (ValueError, TypeError):
+        print(f"Unknown port value: {args.port}")
+        sys.exit(1)
+    try:
+        ds = DiceServer(
+            name=args.name,
+            host=args.host,
+            port=port,
+            password=args.password,
+        )
+        ds()
+    except Exception as e:
+        print(f"ERROR: {e}")
+        sys.exit(1)
