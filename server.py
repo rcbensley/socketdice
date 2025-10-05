@@ -7,6 +7,8 @@ import re
 import socket
 import sys
 import threading
+from collections import deque
+from datetime import datetime as dt
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
 
@@ -27,17 +29,17 @@ HEADER = """
 """
 
 SERVER_INTROS = [
-    "pitiful roles",
-    "critical fails",
-    "the murder hobos to ride again",
-    "the adventure toddlers",
-    "the Bard to TPK...again,",
-    "your nat 20's! Nah just kidding, it's a 1 again",
+    "for pitiful roles",
+    "for critical fails",
+    "for the murder hobos to ride again",
+    "for the adventure toddlers",
+    "for the Bard to TPK...again,",
+    "for your epic nat 20's! Nah just kidding, it's a 1 again",
     "to rig the DC for all charisma builds",
-    "them to talk themselves outta this one",
-    "the party to just opt for violence, again, ",
-    "to be really cautious and careful in their decisions",
-    "these amateurs to just meta it",
+    "for them to talk themselves outta this one",
+    "the party to just opt for violence, again",
+    "for really cautious and careful decisions",
+    "for these amateurs to just meta it",
 ]
 
 
@@ -45,16 +47,29 @@ def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
 
 
+class Client:
+    def __init__(self, client_id, addr, conn, name="unknown"):
+        self.name = name
+        self.id = client_id
+        self.addr = addr
+        self.conn = conn
+        self.key = f"{addr[0]}:{addr[1]}"
+
+    def send(self, msg: str):
+        self.conn.sendall(f"{msg}\n".encode("utf-8"))
+
+    def set_name(self, name: str):
+        if name == self.name:
+            return False
+        self.name = name
+        return True
+
+
 class DiceServer:
-    def __init__(
-        self, name: str, host: str, port: int, password: str = None, max_rolls=8
-    ):
-        self.name = strip(name)
-        self.host = host
-        self.port = port
+    def __init__(self, host: str, port: int, password: str = None, max_rolls: int = 8):
+        self.host = (host, port)
         self.password = password
-        self.clients = {}
-        self.ids = {}
+        self.clients: dict[str, Client] = {}
         self.max_rolls = max_rolls
         self.lock = threading.Lock()
         self.commands = {
@@ -62,36 +77,24 @@ class DiceServer:
             "/dm": self.cmd_rolldm,
             "/name": self.cmd_name,
         }
+        self.rolls = deque(maxlen=100)
 
-    def log(self, level: str, message: str):
-        print(f"{level}\t{message}")
-
-    def err(self, message: str):
-        self.log("ERROR", message)
-
-    def info(self, message: str):
-        self.log("INFO", message)
+    def log(self, message: str):
+        now = dt.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{now} {message}")
 
     def _intro_server(self):
         i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS) - 1)]
-        return f"SOCKET DICE is listening for {i} on {self.host}:{self.port}"
+        return f"SOCKET DICE is listening {i}, on {self.host[0]}:{self.host[1]}"
 
     def broadcast(self, msg=""):
         with self.lock:
             m = msg.encode("utf-8") + b"\n"
-            for i in self.clients:
+            for k, v in self.clients.items():
                 try:
-                    self.clients[i]["conn"].sendall(m)
+                    v.send(m)
                 except Exception as e:
-                    self.err(f"broadcast error for {i}: {e}")
-
-    def cmd_name(self, key, name):
-        new_name = " ".join(name)
-        old_name = self.client_name(key)
-        if new_name == old_name:
-            return
-        self.info(f"{key} has changed their name from {old_name} to {new_name}")
-        self.clients[key]["name"] = new_name
+                    self.log(f"broadcast error for {k}: {e}")
 
     def roll(self, msg):
         if not msg or len(msg) == 0:
@@ -103,7 +106,7 @@ class DiceServer:
         for i in msg:
             match = ROLL_PATTERN.match(i.strip())
             if not match:
-                self.err(f"Unknown roll format: {i}")
+                self.log(f"Unknown roll format: {i}")
                 continue
 
             num, sides, modifier = match.groups()
@@ -119,15 +122,15 @@ class DiceServer:
             results.append(total)
         return results[: self.max_rolls]
 
-    def client_name(self, key: str):
-        if key in self.clients:
-            pn = self.clients[key]["name"]
-            return pn
-        self.err(f"client_name not found for {key} in {self.clients}")
-        return False
-
-    def client_send(self, conn, msg):
-        conn.sendall(f"{msg}\n".encode("utf-8"))
+    def cmd_name(self, key: str, msg: str):
+        new_name = " ".join(msg)
+        for k, v in self.clients.items():
+            if v.name == new_name and key == k:
+                return
+            if v.name == new_name and key != k:
+                return
+        if self.clients[key].set_name(new_name):
+            self.log(f"{key} has changed their name to {self.clients[key].name}")
 
     def rollstr(self, msg):
         r = self.roll(msg)
@@ -135,13 +138,13 @@ class DiceServer:
 
     def cmd_roll(self, key, msg, dm=False):
         result = self.rollstr(msg)
-        name = self.client_name(key)
-        to = "DM" if dm else "ALL"
-        log_msg = f"{to}: {name} rolls {result}"
-        self.log("ROLL", log_msg)
+        name = self.clients[key].name
+        log_msg = f"{name} rolls {result}"
+        self.log(log_msg)
         if not dm:
             self.broadcast(log_msg)
-        return result
+        to = "DM" if dm else "ALL"
+        self.rolls.append({to: log_msg})
 
     def cmd_rolldm(self, key, msg):
         self.cmd_roll(key, msg, True)
@@ -149,31 +152,33 @@ class DiceServer:
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
 
+    def client_exists(self, addr):
+        return self.client_key(addr) in self.clients
+
+    def client_id_exists(self, client_id):
+        for _, v in self.clients.items():
+            if v.id == client_id:
+                return True
+        return False
+
     def client_add(self, conn, addr, name, client_id):
         with self.lock:
-            if addr in self.clients:
-                self.err(f"Address {addr} already exists for id {client_id}")
-                return
-            if client_id in self.ids:
-                self.info(
-                    f"Client ID {client_id} already exists for address {self.ids[client_id]}"
-                )
-                return
-            c = self.client_key(addr)
-            self.clients[c] = {
-                "name": name,
-                "addr": addr,
-                "conn": conn,
-            }
-            self.ids[client_id] = c
-            self.info(f"Added client {c} from {addr} with ID of {client_id}")
+            if self.client_exists(addr):
+                return False
+            if self.client_id_exists(client_id):
+                return False
+            k = self.client_key(addr)
+            c = Client(client_id=client_id, addr=addr, conn=conn, name=name)
+            self.clients[k] = c
+            self.log(f"Added client {c}:{client_id}")
+        return True
 
-    def cmd_exit(self, key):
-        self.clients[key]["conn"].sendall(b"Farewell\n")
+    def cmd_exit(self, key: str):
+        self.clients[key].send("Farewell")
         return False
 
     def client_auth(self, conn, addr):
-        if addr in self.clients:
+        if self.client_exists(addr):
             return True
         data = conn.recv(1024).decode("utf-8").strip()
         if not data.startswith("/login"):
@@ -185,10 +190,10 @@ class DiceServer:
         if self.password and len(login) == 4:
             password = login[4]
             if password != self.password:
-                self.err(f"Wrong password {password}, from {name}@{addr}")
+                self.log(f"Wrong password {password}, from {name}@{addr}:{client_id}")
                 return False
         self.client_add(conn, addr, name, client_id)
-        self.info(f"{addr} has connected to the adventure")
+        self.log(f"{addr} has connected to the adventure")
         return True
 
     def client_handler(self, conn, addr):
@@ -214,43 +219,40 @@ class DiceServer:
                 if func:
                     func(key, msg)
         except ConnectionResetError:
-            self.info(f"{addr} has rage quit")
+            self.log(f"{addr} has rage quit")
         finally:
             with self.lock:
                 if conn in self.clients:
                     self.clients.pop(conn, None)
             conn.close()
-            self.info(f"{addr} has gone back to reality")
+            self.log(f"{addr} has gone back to reality")
 
     def __call__(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server.bind((self.host, self.port))
+        server.bind(self.host)
         server.listen()
         print(HEADER)
-        self.info(self._intro_server())
+        self.log(self._intro_server())
         try:
             while True:
                 conn, addr = server.accept()
                 thread = threading.Thread(target=self.client_handler, args=(conn, addr))
                 thread.start()
-                self.info(f"SOCKET DICE connections: {threading.active_count() - 1}")
+                self.log(f"SOCKET DICE connections: {threading.active_count() - 1}")
         except KeyboardInterrupt:
-            self.info("\nSOCKET DICE has stopped")
+            self.log("\nSOCKET DICE has stopped")
             server.close()
             sys.exit(0)
-        finally:
-            server.close()
-            sys.exit(0)
+        server.close()
+        sys.exit(0)
 
 
-if __name__ == "__main__":
+def main():
     cfg = {
         "host": os.getenv("DICEHOST", "0.0.0.0"),
         "port": os.getenv("DICEPORT", "5001"),
         "password": os.getenv("DICEPASS", ""),
-        "name": os.getenv("DICENAME", "Socket Dice Game"),
-        "log": os.getenv("DICELOG", None),
     }
     parser = argparse.ArgumentParser()
     for k, v in cfg.items():
@@ -264,18 +266,21 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     try:
-        port = int(args.port)
+        p = int(args.port)
     except (ValueError, TypeError):
         print(f"Unknown port value: {args.port}")
         sys.exit(1)
     try:
         ds = DiceServer(
-            name=args.name,
             host=args.host,
-            port=port,
+            port=p,
             password=args.password,
         )
         ds()
     except Exception as e:
         print(f"ERROR: {e}")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
