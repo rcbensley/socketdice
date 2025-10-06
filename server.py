@@ -40,6 +40,7 @@ SERVER_INTROS = [
     "the party to just opt for violence, again",
     "for really cautious and careful decisions",
     "for these amateurs to just meta it",
+    "to see if they commit warcrimes",
 ]
 
 
@@ -76,6 +77,7 @@ class DiceServer:
             "/roll": self.cmd_roll,
             "/dm": self.cmd_rolldm,
             "/name": self.cmd_name,
+            "/who": self.cmd_who,
         }
         self.rolls = deque(maxlen=100)
 
@@ -139,7 +141,8 @@ class DiceServer:
     def cmd_roll(self, key, msg, dm=False):
         result = self.rollstr(msg)
         name = self.clients[key].name
-        log_msg = f"{name} rolls {result}"
+        prefix = "TO DM " if dm else ""
+        log_msg = f"{prefix}{name} rolls {result}"
         self.log(log_msg)
         if not dm:
             self.broadcast(log_msg)
@@ -177,6 +180,11 @@ class DiceServer:
         self.clients[key].send("Farewell")
         return False
 
+    def cmd_who(self, key: str, _):
+        names = ",".join([self.clients[i].name for i in self.clients])
+        self.log(f"Connected player names: {names}")
+        self.clients[key].send(names)
+
     def client_auth(self, conn, addr):
         if self.client_exists(addr):
             return True
@@ -199,6 +207,7 @@ class DiceServer:
     def client_handler(self, conn, addr):
         auth_ok = self.client_auth(conn, addr)
         if not auth_ok:
+            conn.sendall("Login with /login name||id||password\n".encode("utf-8"))
             return
         conn.sendall(b"ok\n")
         try:
