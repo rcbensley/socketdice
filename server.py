@@ -43,6 +43,19 @@ SERVER_INTROS = [
     "to see if they commit warcrimes",
 ]
 
+NAMES = [
+    "SPOOKY SKELETON",
+    "THE BLOODY BARD",
+    "WICKED WIZARD",
+    "SKATEBOARDING SORCERER",
+    "META PEST",
+    "PROBABLE MIMIC",
+    "TAVERN NPC No 3",
+    "BLOODY BARBARIAN",
+    "THE GREAT GOBO",
+    "WIGGLY WARRIOR",
+]
+
 
 def strip(s):
     return re.sub(r"[^A-Za-z0-9 ]+", "", s)
@@ -71,6 +84,7 @@ class DiceServer:
         self.host = (host, port)
         self.password = password
         self.clients: dict[str, Client] = {}
+        self.players = {}
         self.max_rolls = max_rolls
         self.lock = threading.Lock()
         self.commands = {
@@ -266,13 +280,6 @@ def main():
     parser = argparse.ArgumentParser()
     for k, v in cfg.items():
         parser.add_argument(f"--{k}", default=v)
-    parser.add_argument(
-        "-r",
-        "--reset",
-        action="store_true",
-        default=False,
-        help="Reset the database and overwrite the log",
-    )
     args = parser.parse_args()
     try:
         p = int(args.port)
