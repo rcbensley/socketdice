@@ -7,7 +7,6 @@ import re
 import socket
 import sys
 import threading
-from collections import deque
 from datetime import datetime as dt
 
 ROLL_PATTERN = re.compile(r"^(\d*)d(\d+)([+-]\d+)?$")
@@ -88,8 +87,9 @@ class DiceServer:
         self.commands = {
             "/roll": self.cmd_roll,
             "/dm": self.cmd_rolldm,
+            "/d": self.cmd_d_roll,
+            "/dmd": self.cmd_rolldmd,
         }
-        self.rolls = deque(maxlen=100)
 
     def log(self, message: str):
         now = dt.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -134,6 +134,31 @@ class DiceServer:
             results.append(total)
         return results
 
+    def cmd_d_roll(self, key, msg, dm=False):
+        if not msg or len(msg) == 0:
+            msg = [
+                "1||20||0",
+            ]
+        try:
+            d = msg[0].split("||", 3)
+            if len(d) != 3:
+                return
+            count, sides, modifier = int(d[0]), int(d[1]), int(d[2])
+        except (ValueError, TypeError):
+            self.log("Incorrect /d roll format")
+            return
+
+        result = 0
+        for _ in range(0, count):
+            result += random.randint(1, sides)
+        result += modifier
+        name = self.clients[key].name
+        prefix = "TO DM " if dm else ""
+        log_msg = f"{prefix}{name} rolls {result}"
+        self.log(log_msg)
+        if not dm:
+            self.broadcast(log_msg)
+
     def rollstr(self, msg):
         r = self.roll(msg)
         return ",".join(str(i) for i in r)
@@ -146,11 +171,12 @@ class DiceServer:
         self.log(log_msg)
         if not dm:
             self.broadcast(log_msg)
-        to = "DM" if dm else "ALL"
-        self.rolls.append({to: log_msg})
 
     def cmd_rolldm(self, key, msg):
         self.cmd_roll(key, msg, True)
+
+    def cmd_rolldmd(self, key, msg):
+        self.cmd_d_roll(key, msg, True)
 
     def client_key(self, addr):
         return f"{addr[0]}:{addr[1]}"
@@ -202,7 +228,7 @@ class DiceServer:
     def client_handler(self, conn, addr):
         auth_ok = self.client_auth(conn, addr)
         if not auth_ok:
-            conn.sendall("Login with /login name||id||password\n".encode("utf-8"))
+            conn.sendall("Login with /login [password]\n".encode("utf-8"))
             return
         conn.sendall(b"ok\n")
         try:
@@ -246,8 +272,6 @@ class DiceServer:
                 self.log(f"SOCKET DICE connections: {threading.active_count() - 1}")
         except KeyboardInterrupt:
             self.log("\nSOCKET DICE has stopped")
-            server.close()
-            sys.exit(0)
         server.close()
         sys.exit(0)
 
