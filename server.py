@@ -50,11 +50,12 @@ NAMES = [
     "SKATEBOARDING SORCERER",
     "META PEST",
     "PROBABLE MIMIC",
-    "TAVERN NPC No 3",
+    "TAVERN NPC No.3",
     "BLOODY BARBARIAN",
     "THE GREAT GOBO",
     "WIGGLY WARRIOR",
 ]
+random.shuffle(NAMES)
 
 
 def strip(s):
@@ -62,9 +63,8 @@ def strip(s):
 
 
 class Client:
-    def __init__(self, client_id, addr, conn, name="unknown"):
+    def __init__(self, addr, conn, name):
         self.name = name
-        self.id = client_id
         self.addr = addr
         self.conn = conn
         self.key = f"{addr[0]}:{addr[1]}"
@@ -80,18 +80,14 @@ class Client:
 
 
 class DiceServer:
-    def __init__(self, host: str, port: int, password: str = None, max_rolls: int = 8):
+    def __init__(self, host: str, port: int, password: str = None):
         self.host = (host, port)
         self.password = password
-        self.clients: dict[str, Client] = {}
-        self.players = {}
-        self.max_rolls = max_rolls
+        self.clients = {}
         self.lock = threading.Lock()
         self.commands = {
             "/roll": self.cmd_roll,
             "/dm": self.cmd_rolldm,
-            "/name": self.cmd_name,
-            "/who": self.cmd_who,
         }
         self.rolls = deque(maxlen=100)
 
@@ -136,17 +132,7 @@ class DiceServer:
             rolls = [random.randint(1, sides) for _ in range(num)]
             total = sum(rolls) + modifier
             results.append(total)
-        return results[: self.max_rolls]
-
-    def cmd_name(self, key: str, msg: str):
-        new_name = " ".join(msg)
-        for k, v in self.clients.items():
-            if v.name == new_name and key == k:
-                return
-            if v.name == new_name and key != k:
-                return
-        if self.clients[key].set_name(new_name):
-            self.log(f"{key} has changed their name to {self.clients[key].name}")
+        return results
 
     def rollstr(self, msg):
         r = self.roll(msg)
@@ -172,22 +158,19 @@ class DiceServer:
     def client_exists(self, addr):
         return self.client_key(addr) in self.clients
 
-    def client_id_exists(self, client_id):
-        for _, v in self.clients.items():
-            if v.id == client_id:
-                return True
-        return False
-
-    def client_add(self, conn, addr, name, client_id):
+    def client_add(self, conn, addr):
         with self.lock:
             if self.client_exists(addr):
                 return False
-            if self.client_id_exists(client_id):
+            cc = len(self.clients)
+            if cc == len(NAMES):
+                self.log("Max player count reached")
                 return False
+            name = NAMES[cc]
             k = self.client_key(addr)
-            c = Client(client_id=client_id, addr=addr, conn=conn, name=name)
+            c = Client(addr=addr, conn=conn, name=name)
             self.clients[k] = c
-            self.log(f"Added client {c}:{client_id}")
+            self.log(f"Added client {c}")
         return True
 
     def cmd_exit(self, key: str):
@@ -206,15 +189,13 @@ class DiceServer:
         if not data.startswith("/login"):
             return False
 
-        login = data.split("||", 5)
-        name = login[1]
-        client_id = login[2]
-        if self.password and len(login) == 4:
-            password = login[4]
+        login = data.split()
+        if self.password and len(login) == 2:
+            password = login[1]
             if password != self.password:
-                self.log(f"Wrong password {password}, from {name}@{addr}:{client_id}")
+                self.log(f"Wrong password {password} {addr}")
                 return False
-        self.client_add(conn, addr, name, client_id)
+        self.client_add(conn, addr)
         self.log(f"{addr} has connected to the adventure")
         return True
 
@@ -284,7 +265,7 @@ def main():
     try:
         p = int(args.port)
     except (ValueError, TypeError):
-        print(f"Unknown port value: {args.port}")
+        print(f"Unknown port value: {args.port}, must be an integer")
         sys.exit(1)
     try:
         ds = DiceServer(
