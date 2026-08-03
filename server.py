@@ -26,6 +26,7 @@ HEADER = """
       ░    ░ ░░ ░    ░  ░     ░  ░          ░    ░ ░ ░       ░  ░
               ░                           ░        ░
 """
+TITLE = "SOCKETDICE"
 
 SERVER_INTROS = [
     "for pitiful roles",
@@ -41,6 +42,11 @@ SERVER_INTROS = [
     "for these amateurs to just meta it",
     "to see if they commit warcrimes",
 ]
+
+
+def server_intro():
+    return SERVER_INTROS[random.randint(1, len(SERVER_INTROS) - 1)]
+
 
 NAMES = [
     "SPOOKY SKELETON",
@@ -96,8 +102,8 @@ class DiceServer:
         print(f"{now} {message}")
 
     def _intro_server(self):
-        i = SERVER_INTROS[random.randint(1, len(SERVER_INTROS) - 1)]
-        return f"SOCKET DICE is listening {i}, on {self.host[0]}:{self.host[1]}"
+        i = server_intro()
+        return f"{TITLE} is listening {i}, on {self.host[0]}:{self.host[1]}"
 
     def broadcast(self, msg=""):
         with self.lock:
