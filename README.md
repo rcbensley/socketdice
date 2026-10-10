@@ -4,7 +4,7 @@ Just connect and roll.
 
 ## Why?
 
-Other than dndbeyond's poor availability? Because I wanted to.
+For funsies.
 
 Is this useful? Yes? No. Maybe?
 
@@ -12,11 +12,8 @@ Did I enjoy it? Yes!
 
 ## Running a Server
 
-```./server.py --help```
-
-Just run on the default port, 
+```./server.lua --help```
 
 ## Connecting as a Player
 
-Use the Python Curses or Picotron client.
-
+TODO, also coming up with Picotron client

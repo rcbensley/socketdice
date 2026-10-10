@@ -1,8 +1,5 @@
 .env
 *.log
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
-.__pycache__/
 data/
 saves/
+*.db
