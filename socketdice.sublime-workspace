@@ -1,0 +1,750 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"subl",
+				"subl_target"
+			],
+			[
+				"sub",
+				"subl_target_"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "client.lua",
+			"file_size": 2056,
+			"file_write_time": 134363143490193267,
+			"settings":
+			{
+				"buffer_size": 2056,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					9,
+					1,
+					"sequence",
+					{
+						"commands":
+						[
+							[
+								"move_to",
+								{
+									"register": "\"",
+									"to": "hardeol"
+								}
+							],
+							[
+								"insert",
+								{
+									"characters": "\n--"
+								}
+							],
+							[
+								"insert",
+								{
+									"characters": " "
+								}
+							],
+							[
+								"paste",
+								null
+							],
+							[
+								"exit_insert_mode",
+								null
+							]
+						]
+					},
+					"BQAAABUAAAAAAAAAFgAAAAAAAAAAAAAAFgAAAAAAAAAXAAAAAAAAAAAAAAAXAAAAAAAAABgAAAAAAAAAAAAAABgAAAAAAAAAGQAAAAAAAAAAAAAAGQAAAAAAAABSAAAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAUAAAAAAAAABQAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					13,
+					1,
+					"vi_eval",
+					{
+						"action_args":
+						{
+						},
+						"action_command": "vi_delete",
+						"motion_args":
+						{
+							"by": "stops",
+							"empty_line": true,
+							"extend": true,
+							"forward": true,
+							"punct_begin": true,
+							"word_begin": true
+						},
+						"motion_clip_to_line": true,
+						"motion_command": "move",
+						"motion_inclusive": false,
+						"motion_mode": 0
+					},
+					"AQAAAEQAAAAAAAAARAAAAAAAAAANAAAAeW91cl9wYXNzd29yZA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABEAAAAAAAAAEQAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					15,
+					1,
+					"sequence",
+					{
+						"commands":
+						[
+							[
+								"insert",
+								{
+									"characters": "password"
+								}
+							],
+							[
+								"exit_insert_mode",
+								null
+							]
+						]
+					},
+					"CAAAAEQAAAAAAAAARQAAAAAAAAAAAAAARQAAAAAAAABGAAAAAAAAAAAAAABGAAAAAAAAAEcAAAAAAAAAAAAAAEcAAAAAAAAASAAAAAAAAAAAAAAASAAAAAAAAABJAAAAAAAAAAAAAABJAAAAAAAAAEoAAAAAAAAAAAAAAEoAAAAAAAAASwAAAAAAAAAAAAAASwAAAAAAAABMAAAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABEAAAAAAAAAEQAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					37,
+					1,
+					"indent",
+					null,
+					"AQAAAE8AAAAAAAAAUwAAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABPAAAAAAAAAHAAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					45,
+					1,
+					"sequence",
+					{
+						"commands":
+						[
+							[
+								"move_to",
+								{
+									"register": "\"",
+									"to": "hardeol"
+								}
+							],
+							[
+								"left_delete",
+								null
+							],
+							[
+								"left_delete",
+								null
+							],
+							[
+								"left_delete",
+								null
+							],
+							[
+								"exit_insert_mode",
+								null
+							]
+						]
+					},
+					"AwAAABQAAAAAAAAAFAAAAAAAAAABAAAAdBMAAAAAAAAAEwAAAAAAAAABAAAAaRIAAAAAAAAAEgAAAAAAAAABAAAAag",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+				],
+				[
+					3,
+					1,
+					"revert",
+					null,
+					"AwAAAAAAAAAAAAAAAAAAAAAAAACdCgAAIyEvdXNyL2Jpbi9lbnYgbHVhCi0tIGx1YWppdCBjbGllbnQubHVhIC1IIDEyNy4wLjAuMSAtUCA1MDAxIC1wICJwYXNzd29yZCIKCiAgICBsb2NhbCBzb2NrZXQgPSByZXF1aXJlKCJzb2NrZXQiKQoKbG9jYWwgZnVuY3Rpb24gcHJpbnRfcHJvbXB0KCkKICAgIGlvLndyaXRlKCI+ICIpCiAgICBpby5mbHVzaCgpCmVuZAoKbG9jYWwgZnVuY3Rpb24gbWFpbigpCiAgICBsb2NhbCBob3N0ID0gIjEyNy4wLjAuMSIKICAgIGxvY2FsIHBvcnQgPSA1MDAxCiAgICBsb2NhbCBwYXNzd29yZCA9ICIiCgogICAgLS0gU2ltcGxlIGFyZ3VtZW50IHBhcnNpbmcKICAgIGxvY2FsIGkgPSAxCiAgICB3aGlsZSBpIDw9ICNhcmcgZG8KICAgICAgICBpZiBhcmdbaV0gPT0gIi1IIiBvciBhcmdbaV0gPT0gIi0taG9zdCIgdGhlbgogICAgICAgICAgICBob3N0ID0gYXJnW2kgKyAxXQogICAgICAgICAgICBpID0gaSArIDIKICAgICAgICBlbHNlaWYgYXJnW2ldID09ICItUCIgb3IgYXJnW2ldID09ICItLXBvcnQiIHRoZW4KICAgICAgICAgICAgcG9ydCA9IHRvbnVtYmVyKGFyZ1tpICsgMV0pCiAgICAgICAgICAgIGkgPSBpICsgMgogICAgICAgIGVsc2VpZiBhcmdbaV0gPT0gIi1wIiBvciBhcmdbaV0gPT0gIi0tcGFzc3dvcmQiIHRoZW4KICAgICAgICAgICAgcGFzc3dvcmQgPSBhcmdbaSArIDFdCiAgICAgICAgICAgIGkgPSBpICsgMgogICAgICAgIGVsc2UKICAgICAgICAgICAgaSA9IGkgKyAxCiAgICAgICAgZW5kCiAgICBlbmQKCiAgICBsb2NhbCBzb2NrID0gc29ja2V0LnRjcCgpCiAgICBsb2NhbCBzdWNjZXNzLCBlcnIgPSBzb2NrOmNvbm5lY3QoaG9zdCwgcG9ydCkKICAgIGlmIG5vdCBzdWNjZXNzIHRoZW4KICAgICAgICBwcmludCgiRXJyb3IgY29ubmVjdGluZyB0byBzZXJ2ZXI6ICIgLi4gdG9zdHJpbmcoZXJyKSkKICAgICAgICBvcy5leGl0KDEpCiAgICBlbmQKCiAgICBzb2NrOnNldHRpbWVvdXQoMCkgLS0gTm9uLWJsb2NraW5nCgogICAgcGFzc3dvcmQgPSBwYXNzd29yZDptYXRjaCgiXiVzKiguLSklcyokIikgLS0gc3RyaXAgd2hpdGVzcGFjZQogICAgaWYgcGFzc3dvcmQgfj0gIiIgdGhlbgogICAgICAgIGxvY2FsIGF1dGhfc3RyID0gc3RyaW5nLmZvcm1hdCgiL2xvZ2luICVzXG4iLCBwYXNzd29yZCkKICAgICAgICBzb2NrOnNlbmQoYXV0aF9zdHIpCiAgICAgICAgcHJpbnQoIkNvbm5lY3RlZCIpCiAgICBlbmQKCiAgICBwcmludF9wcm9tcHQoKQoKICAgIHdoaWxlIHRydWUgZG8KICAgICAgICAtLSBVc2Ugc29ja2V0LnNlbGVjdCB0byB3YWl0IGZvciBpbnB1dCBmcm9tIGVpdGhlciB0aGUgc2VydmVyIHNvY2tldCBvciBzdGRpbiAoaGFuZGxlIGZkIDApCiAgICAgICAgbG9jYWwgcmVhZF9sID0ge3NvY2ssIGlvLnN0ZGlufQogICAgICAgIGxvY2FsIHJlYWRhYmxlLCBfLCBlcnIgPSBzb2NrZXQuc2VsZWN0KHJlYWRfbCwgbmlsLCAwLjEpCgogICAgICAgIGlmIHJlYWRhYmxlIHRoZW4KICAgICAgICAgICAgZm9yIF8sIHJfc29jayBpbiBpcGFpcnMocmVhZGFibGUpIGRvCiAgICAgICAgICAgICAgICBpZiByX3NvY2sgPT0gc29jayB0aGVuCiAgICAgICAgICAgICAgICAgICAgLS0gUmVhZCBmcm9tIHNlcnZlcgogICAgICAgICAgICAgICAgICAgIGxvY2FsIGRhdGEsIGVycl9tc2cgPSBzb2NrOnJlY2VpdmUoIipsIikKICAgICAgICAgICAgICAgICAgICBpZiBlcnJfbXNnID09ICJjbG9zZWQiIG9yIGVycl9tc2cgPT0gImNvbm5lY3Rpb24gcmVmdXNlZCIgdGhlbgogICAgICAgICAgICAgICAgICAgICAgICBwcmludCgiXG5EaXNjb25uZWN0ZWQgZnJvbSBzZXJ2ZXIuIikKICAgICAgICAgICAgICAgICAgICAgICAgc29jazpjbG9zZSgpCiAgICAgICAgICAgICAgICAgICAgICAgIG9zLmV4aXQoMCkKICAgICAgICAgICAgICAgICAgICBlbHNlaWYgZGF0YSB0aGVuCiAgICAgICAgICAgICAgICAgICAgICAgIC0tIENsZWFyIGxpbmUgZm9yIHByb21wdCwgcHJpbnQgbWVzc2FnZSwgYW5kIHJlc3RvcmUgcHJvbXB0CiAgICAgICAgICAgICAgICAgICAgICAgIGlvLndyaXRlKCJcclwyN1tLIikKICAgICAgICAgICAgICAgICAgICAgICAgcHJpbnQoZGF0YSkKICAgICAgICAgICAgICAgICAgICAgICAgcHJpbnRfcHJvbXB0KCkKICAgICAgICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgICAgIGVsc2VpZiByX3NvY2sgPT0gaW8uc3RkaW4gdGhlbgogICAgICAgICAgICAgICAgICAgIC0tIFJlYWQgZnJvbSBjb25zb2xlIHVzZXIgaW5wdXQKICAgICAgICAgICAgICAgICAgICBsb2NhbCBsaW5lID0gaW8ucmVhZCgiKmwiKQogICAgICAgICAgICAgICAgICAgIGlmIGxpbmUgdGhlbgogICAgICAgICAgICAgICAgICAgICAgICBsb2NhbCBsb3dlcl9saW5lID0gbGluZTpsb3dlcigpCiAgICAgICAgICAgICAgICAgICAgICAgIGlmIGxvd2VyX2xpbmUgPT0gIi9leGl0IiB0aGVuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzb2NrOmNsb3NlKCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9zLmV4aXQoMCkKICAgICAgICAgICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgICAgICAgICAgICAgIHNvY2s6c2VuZChsaW5lIC4uICJcbiIpCiAgICAgICAgICAgICAgICAgICAgICAgIHByaW50X3Byb21wdCgpCiAgICAgICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgZW5kCiAgICAgICAgZW5kCiAgICBlbmQKZW5kCgptYWluKCkAAAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAACAgAAAAAAAAAAAAA",
+					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAACOBAAAAAAAAI4EAAAAAAAAAAAAAAAA8L8"
+				]
+			]
+		},
+		{
+			"file": "server.lua",
+			"file_size": 7980,
+			"file_write_time": 134363143665534953,
+			"settings":
+			{
+				"buffer_size": 7284,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					49,
+					1,
+					"vi_eval",
+					{
+						"action_args":
+						{
+						},
+						"action_command": "vi_delete",
+						"motion_args":
+						{
+							"to": "line"
+						},
+						"motion_clip_to_line": false,
+						"motion_command": "expand_selection",
+						"motion_inclusive": false,
+						"motion_mode": 0
+					},
+					"AQAAADkAAAAAAAAAOQAAAAAAAAAkAAAALS0gU2VlZCB0aGUgcmFuZG9tIG51bWJlciBnZW5lcmF0b3IK",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABXAAAAAAAAAFcAAAAAAAAAAAAAAABAakA"
+				],
+				[
+					61,
+					1,
+					"vi_eval",
+					{
+						"action_args":
+						{
+						},
+						"action_command": "vi_delete",
+						"motion_args":
+						{
+							"by": "stops",
+							"empty_line": true,
+							"extend": true,
+							"forward": true,
+							"punct_begin": true,
+							"word_begin": true
+						},
+						"motion_clip_to_line": true,
+						"motion_command": "move",
+						"motion_inclusive": false,
+						"motion_mode": 0
+					},
+					"AQAAAJEFAAAAAAAAkQUAAAAAAAAEAAAAVEhFIA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAACRBQAAAAAAAJEFAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					76,
+					1,
+					"vi_eval",
+					{
+						"action_args":
+						{
+						},
+						"action_command": "vi_delete",
+						"motion_args":
+						{
+							"to": "line"
+						},
+						"motion_clip_to_line": false,
+						"motion_command": "expand_selection",
+						"motion_inclusive": false,
+						"motion_mode": 0
+					},
+					"AQAAANIFAAAAAAAA0gUAAAAAAAARAAAAICAgICJNRVRBIFBFU1QiLAo",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADdBQAAAAAAAN0FAAAAAAAAAAAAAABAU0A"
+				],
+				[
+					82,
+					1,
+					"sequence",
+					{
+						"commands":
+						[
+							[
+								"move_to",
+								{
+									"register": "\"",
+									"to": "hardeol"
+								}
+							],
+							[
+								"left_delete",
+								null
+							],
+							[
+								"left_delete",
+								null
+							],
+							[
+								"left_delete",
+								null
+							],
+							[
+								"exit_insert_mode",
+								null
+							]
+						]
+					},
+					"AwAAABQAAAAAAAAAFAAAAAAAAAABAAAAdBMAAAAAAAAAEwAAAAAAAAABAAAAaRIAAAAAAAAAEgAAAAAAAAABAAAAag",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					3,
+					1,
+					"revert",
+					null,
+					"AwAAAAAAAAAAAAAAAAAAAAAAAACWJQAAIyEvdXNyL2Jpbi9lbnYgbHVhCgpsb2NhbCBzb2NrZXQgPSByZXF1aXJlKCJzb2NrZXQiKQoKbWF0aC5yYW5kb21zZWVkKG9zLnRpbWUoKSkKCmxvY2FsIEhFQURFUiA9IFtbCiAg4paI4paI4paI4paI4paI4paI4paS4paI4paI4paI4paI4paIIOKWhOKWiOKWiOKWiOKWiOKWhCDilojilogg4paE4paI4paT4paI4paI4paI4paI4paE4paE4paE4paI4paI4paI4paIICDilpPilojilojilojilojilojiloQg4paI4paI4paT4paE4paI4paI4paI4paI4paE4paT4paI4paI4paI4paI4paICuKWkuKWiOKWiCAgICDilpLilojilojilpIgIOKWiOKWkuKWiOKWiOKWgCDiloDilogg4paI4paI4paE4paI4paS4paT4paIICAg4paTICDilojilojilpIgICDilpLilojilojiloAg4paI4paI4paT4paI4paI4paS4paI4paI4paAIOKWgOKWiOKWk+KWiCAgIOKWgArilpEg4paT4paI4paI4paEIOKWkuKWiOKWiOKWkSAg4paI4paS4paT4paIICAgIOKWk+KWiOKWiOKWiOKWhOKWkeKWkuKWiOKWiOKWiCDilpIg4paT4paI4paI4paRICAg4paR4paI4paIICAg4paI4paS4paI4paI4paS4paT4paIICAgIOKWkuKWiOKWiOKWiAogIOKWkiAgIOKWiOKWkuKWiOKWiCAgIOKWiOKWkuKWk+KWk+KWhCDiloTilojilpPilojilogg4paI4paE4paS4paT4paIICDilpEg4paT4paI4paI4paTICAg4paR4paT4paI4paEICAg4paR4paI4paI4paS4paT4paT4paEIOKWhOKWiOKWkuKWk+KWiCAg4paECuKWkuKWiOKWiOKWiOKWiOKWiOKWiOKWkSDilojilojilojilojilpPilpIg4paT4paI4paI4paI4paA4paS4paI4paI4paSIOKWiOKWkeKWkuKWiOKWiOKWiOKWiOKWkuKWkuKWiOKWiOKWkiAgIOKWkeKWkuKWiOKWiOKWiOKWiOKWk+KWkeKWiOKWiOKWkiDilpPilojilojilojiloDilpHilpLilojilojilojilojilpIK4paSIOKWkuKWk+KWkiDilpLilpEg4paS4paR4paS4paR4paS4paRIOKWkeKWkiDilpIg4paSIOKWkuKWkiDilpPilpHilpEg4paS4paRIOKWkeKWkiDilpHilpEgICAg4paS4paS4paTICDilpLilpHilpMg4paRIOKWkeKWkiDilpIg4paR4paRIOKWkuKWkSDilpEK4paRIOKWkeKWkiAg4paRICDilpEg4paSIOKWkuKWkSDilpEgIOKWkiDilpEg4paR4paSIOKWkuKWkeKWkSDilpEgIOKWkSAg4paRICAgICDilpEg4paSICDilpIg4paSIOKWkSDilpEgIOKWkiAg4paRIOKWkSAg4paRCuKWkSAg4paRICDilpHilpEg4paRIOKWkSDilpLilpEgICAg4paRIOKWkeKWkSDilpEgICDilpEgIOKWkSAgICAgICAg4paRIOKWkSAg4paRIOKWkiDilpEgICAgICDilpEgIOKWkQogICAgIOKWkSAgICDilpEg4paR4paRICAgIOKWkSAg4paRICAgICDilpEgIOKWkSAgICAgICAgICAgIOKWkSAgICDilpEgICAgICDilpEgIOKWkQogICAgICAgICAgICAgICAg4paRICAgICAgICAgICAgICAgICAgICAg4paRICAgICAgICDilpEKXV0KCmxvY2FsIFRJVExFID0gIlNPQ0tFVERJQ0UiCgpsb2NhbCBTRVJWRVJfSU5UUk9TID0gewogICAgImZvciBwaXRpZnVsIHJvbGVzIiwKICAgICJmb3IgY3JpdGljYWwgZmFpbHMiLAogICAgImZvciB0aGUgbXVyZGVyIGhvYm9zIHRvIHJpZGUgYWdhaW4iLAogICAgImZvciB0aGUgYWR2ZW50dXJlIHRvZGRsZXJzIiwKICAgICJmb3IgdGhlIEJhcmQgdG8gVFBLLi4uYWdhaW4sIiwKICAgICJmb3IgeW91ciBlcGljIG5hdCAyMCdzISBOYWgganVzdCBraWRkaW5nLCBpdCdzIGEgMSBhZ2FpbiIsCiAgICAidG8gcmlnIHRoZSBEQyBmb3IgYWxsIGNoYXJpc21hIGJ1aWxkcyIsCiAgICAiZm9yIHRoZW0gdG8gdGFsayB0aGVtc2VsdmVzIG91dHRhIHRoaXMgb25lIiwKICAgICJ0aGUgcGFydHkgdG8ganVzdCBvcHQgZm9yIHZpb2xlbmNlLCBhZ2FpbiIsCiAgICAiZm9yIHJlYWxseSBjYXV0aW91cyBhbmQgY2FyZWZ1bCBkZWNpc2lvbnMiLAogICAgImZvciB0aGVzZSBhbWF0ZXVycyB0byBqdXN0IG1ldGEgaXQiLAogICAgInRvIHNlZSBpZiB0aGV5IGNvbW1pdCB3YXJjcmltZXMiLAp9Cgpsb2NhbCBmdW5jdGlvbiBzZXJ2ZXJfaW50cm8oKQogICAgcmV0dXJuIFNFUlZFUl9JTlRST1NbbWF0aC5yYW5kb20oMSwgI1NFUlZFUl9JTlRST1MpXQplbmQKCmxvY2FsIE5BTUVTID0gewogICAgIlNQT09LWSBTS0VMRVRPTiIsCiAgICAiQkxPT0RZIEJBUkQiLAogICAgIldJQ0tFRCBXSVpBUkQiLAogICAgIlNLQVRFQk9BUkRJTkcgU09SQ0VSRVIiLAogICAgIlBST0JBQkxFIE1JTUlDIiwKICAgICJUQVZFUk4gTlBDIE5vLjMiLAogICAgIkJMT09EWSBCQVJCQVJJQU4iLAogICAgIlRIRSBHUkVBVCBHT0JPIiwKICAgICJXSUdHTFkgV0FSUklPUiIsCn0KCi0tIFNodWZmbGUgbmFtZXMKZm9yIGkgPSAjTkFNRVMsIDIsIC0xIGRvCiAgICBsb2NhbCBqID0gbWF0aC5yYW5kb20oaSkKICAgIE5BTUVTW2ldLCBOQU1FU1tqXSA9IE5BTUVTW2pdLCBOQU1FU1tpXQplbmQKCmxvY2FsIGZ1bmN0aW9uIGxvZ19tc2cobWVzc2FnZSkKICAgIGxvY2FsIG5vdyA9IG9zLmRhdGUoIiVZLSVtLSVkICVIOiVNOiVTIikKICAgIHByaW50KHN0cmluZy5mb3JtYXQoIiVzICVzIiwgbm93LCBtZXNzYWdlKSkKZW5kCgpsb2NhbCBEaWNlU2VydmVyID0ge30KRGljZVNlcnZlci5fX2luZGV4ID0gRGljZVNlcnZlcgoKZnVuY3Rpb24gRGljZVNlcnZlci5uZXcoaG9zdCwgcG9ydCwgcGFzc3dvcmQpCiAgICBsb2NhbCBzZWxmID0gc2V0bWV0YXRhYmxlKHt9LCBEaWNlU2VydmVyKQogICAgc2VsZi5ob3N0ID0gaG9zdAogICAgc2VsZi5wb3J0ID0gcG9ydAogICAgc2VsZi5wYXNzd29yZCA9IHBhc3N3b3JkIG9yICIiCiAgICBzZWxmLmNsaWVudHMgPSB7fSAtLSBrZXkgLT4ge2Nvbm4gPSBjbGllbnQsIG5hbWUgPSBuYW1lLCBhZGRyID0gYWRkcn0KICAgIHNlbGYuY2xpZW50X2NvdW50ID0gMAogICAgcmV0dXJuIHNlbGYKZW5kCgpmdW5jdGlvbiBEaWNlU2VydmVyOmJyb2FkY2FzdChtc2cpCiAgICBsb2NhbCBwYXlsb2FkID0gbXNnIC4uICJcbiIKICAgIGZvciBfLCBjbGllbnQgaW4gcGFpcnMoc2VsZi5jbGllbnRzKSBkbwogICAgICAgIHBjYWxsKGZ1bmN0aW9uKCkKICAgICAgICAgICAgY2xpZW50LmNvbm46c2VuZChwYXlsb2FkKQogICAgICAgIGVuZCkKICAgIGVuZAplbmQKCmxvY2FsIGZ1bmN0aW9uIHBhcnNlX3JvbGxfYXJncyhhcmdzKQogICAgaWYgbm90IGFyZ3Mgb3IgI2FyZ3MgPT0gMCB0aGVuCiAgICAgICAgcmV0dXJuIHttYXRoLnJhbmRvbSgxLCAyMCl9CiAgICBlbmQKICAgIGxvY2FsIHJlc3VsdHMgPSB7fQogICAgZm9yIF8sIGFyZyBpbiBpcGFpcnMoYXJncykgZG8KICAgICAgICAtLSBNYXRjaGVzIChcZCopZChcZCspKFsrLV1cZCspPwogICAgICAgIGxvY2FsIG51bV9zdHIsIHNpZGVzX3N0ciwgbW9kX3N0ciA9IGFyZzptYXRjaCgiXiglZCopZCglZCspKFsrLV0/JWQqKSVzKiQiKQogICAgICAgIGlmIG5vdCBudW1fc3RyIHRoZW4KICAgICAgICAgICAgbG9nX21zZygiVW5rbm93biByb2xsIGZvcm1hdDogIiAuLiB0b3N0cmluZyhhcmcpKQogICAgICAgIGVsc2UKICAgICAgICAgICAgbG9jYWwgbnVtID0gKG51bV9zdHIgPT0gIiIgYW5kIDEgb3IgdG9udW1iZXIobnVtX3N0cikpCiAgICAgICAgICAgIGxvY2FsIHNpZGVzID0gdG9udW1iZXIoc2lkZXNfc3RyKQogICAgICAgICAgICBsb2NhbCBtb2RpZmllciA9IChtb2Rfc3RyID09ICIiIG9yIG5vdCBtb2Rfc3RyKSBhbmQgMCBvciB0b251bWJlcihtb2Rfc3RyKQoKICAgICAgICAgICAgaWYgbnVtID4gMCBhbmQgc2lkZXMgPiAwIHRoZW4KICAgICAgICAgICAgICAgIGxvY2FsIHRvdGFsID0gbW9kaWZpZXIKICAgICAgICAgICAgICAgIGZvciBfID0gMSwgbnVtIGRvCiAgICAgICAgICAgICAgICAgICAgdG90YWwgPSB0b3RhbCArIG1hdGgucmFuZG9tKDEsIHNpZGVzKQogICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgICAgICB0YWJsZS5pbnNlcnQocmVzdWx0cywgdG90YWwpCiAgICAgICAgICAgIGVuZAogICAgICAgIGVuZAogICAgZW5kCiAgICByZXR1cm4gcmVzdWx0cwplbmQKCmZ1bmN0aW9uIERpY2VTZXJ2ZXI6Y21kX3JvbGwoa2V5LCBhcmdzLCBkbSkKICAgIGxvY2FsIHIgPSBwYXJzZV9yb2xsX2FyZ3MoYXJncykKICAgIGxvY2FsIHJlc3VsdF9zdHIgPSB0YWJsZS5jb25jYXQociwgIiwiKQogICAgbG9jYWwgbmFtZSA9IHNlbGYuY2xpZW50c1trZXldLm5hbWUKICAgIGxvY2FsIHByZWZpeCA9IGRtIGFuZCAiVE8gRE0gIiBvciAiIgogICAgbG9jYWwgbWVzc2FnZSA9IHN0cmluZy5mb3JtYXQoIiVzJXMgcm9sbHMgJXMiLCBwcmVmaXgsIG5hbWUsIHJlc3VsdF9zdHIpCiAgICBsb2dfbXNnKG1lc3NhZ2UpCiAgICBpZiBub3QgZG0gdGhlbgogICAgICAgIHNlbGY6YnJvYWRjYXN0KG1lc3NhZ2UpCiAgICBlbmQKZW5kCgpmdW5jdGlvbiBEaWNlU2VydmVyOmNtZF9kX3JvbGwoa2V5LCBhcmdzLCBkbSkKICAgIGlmIG5vdCBhcmdzIG9yICNhcmdzID09IDAgdGhlbgogICAgICAgIGFyZ3MgPSB7IjF8fDIwfHwwIn0KICAgIGVuZAogICAgbG9jYWwgY291bnQsIHNpZGVzLCBtb2RpZmllciA9IDEsIDIwLCAwCiAgICBsb2NhbCBzdWNjZXNzLCBlcnIgPSBwY2FsbChmdW5jdGlvbigpCiAgICAgICAgbG9jYWwgZCA9IHt9CiAgICAgICAgZm9yIHBhcnQgaW4gc3RyaW5nLmdtYXRjaChhcmdzWzFdLCAiW158XSsiKSBkbwogICAgICAgICAgICB0YWJsZS5pbnNlcnQoZCwgcGFydCkKICAgICAgICBlbmQKICAgICAgICBpZiAjZCA+PSAzIHRoZW4KICAgICAgICAgICAgY291bnQgPSB0b251bWJlcihkWzFdKQogICAgICAgICAgICBzaWRlcyA9IHRvbnVtYmVyKGRbMl0pCiAgICAgICAgICAgIG1vZGlmaWVyID0gdG9udW1iZXIoZFszXSkKICAgICAgICBlbmQKICAgIGVuZCkKCiAgICBpZiBub3Qgc3VjY2VzcyB0aGVuCiAgICAgICAgbG9nX21zZygiSW5jb3JyZWN0IC9kIHJvbGwgZm9ybWF0IikKICAgICAgICByZXR1cm4KICAgIGVuZAoKICAgIGxvY2FsIHJlc3VsdCA9IG1vZGlmaWVyCiAgICBmb3IgXyA9IDEsIGNvdW50IGRvCiAgICAgICAgcmVzdWx0ID0gcmVzdWx0ICsgbWF0aC5yYW5kb20oMSwgc2lkZXMpCiAgICBlbmQKCiAgICBsb2NhbCBuYW1lID0gc2VsZi5jbGllbnRzW2tleV0ubmFtZQogICAgbG9jYWwgcHJlZml4ID0gZG0gYW5kICJUTyBETSAiIG9yICIiCiAgICBsb2NhbCBtZXNzYWdlID0gc3RyaW5nLmZvcm1hdCgiJXMlcyByb2xscyAlcyIsIHByZWZpeCwgbmFtZSwgdG9zdHJpbmcocmVzdWx0KSkKICAgIGxvZ19tc2cobWVzc2FnZSkKICAgIGlmIG5vdCBkbSB0aGVuCiAgICAgICAgc2VsZjpicm9hZGNhc3QobWVzc2FnZSkKICAgIGVuZAplbmQKCmZ1bmN0aW9uIERpY2VTZXJ2ZXI6cnVuKCkKICAgIGxvY2FsIHNlcnZlciA9IGFzc2VydChzb2NrZXQuYmluZChzZWxmLmhvc3QsIHNlbGYucG9ydCkpCiAgICBzZXJ2ZXI6c2V0dGltZW91dCgwKSAtLSBub24tYmxvY2tpbmcKICAgIGxvY2FsIGlwLCBwb3J0ID0gc2VydmVyOmdldHNvY2tuYW1lKCkKCiAgICBwcmludChIRUFERVIpCiAgICBsb2NhbCBpbnRybyA9IHN0cmluZy5mb3JtYXQoIiVzIGlzIGxpc3RlbmluZyAlcywgb24gJXM6JXMiLCBUSVRMRSwgc2VydmVyX2ludHJvKCksIGlwLCB0b3N0cmluZyhwb3J0KSkKICAgIGxvZ19tc2coaW50cm8pCgogICAgbG9jYWwgY2xpZW50X3NvY2tzID0ge30KCiAgICB3aGlsZSB0cnVlIGRvCiAgICAgICAgLS0gQWNjZXB0IG5ldyBjb25uZWN0aW9ucwogICAgICAgIGxvY2FsIHNvY2sgPSBzZXJ2ZXI6YWNjZXB0KCkKICAgICAgICBpZiBzb2NrIHRoZW4KICAgICAgICAgICAgc29jazpzZXR0aW1lb3V0KDApCiAgICAgICAgICAgIGxvY2FsIGlwLCBwb3J0ID0gc29jazpnZXRwZWVybmFtZSgpCiAgICAgICAgICAgIGxvY2FsIGtleSA9IGlwIC4uICI6IiAuLiBwb3J0CgogICAgICAgICAgICBpZiBzZWxmLmNsaWVudF9jb3VudCA+PSAjTkFNRVMgdGhlbgogICAgICAgICAgICAgICAgbG9nX21zZygiTWF4IHBsYXllciBjb3VudCByZWFjaGVkIikKICAgICAgICAgICAgICAgIHNvY2s6c2VuZCgiTWF4IHBsYXllciBjb3VudCByZWFjaGVkXG4iKQogICAgICAgICAgICAgICAgc29jazpjbG9zZSgpCiAgICAgICAgICAgIGVsc2UKICAgICAgICAgICAgICAgIHNlbGYuY2xpZW50X2NvdW50ID0gc2VsZi5jbGllbnRfY291bnQgKyAxCiAgICAgICAgICAgICAgICBsb2NhbCBuYW1lID0gTkFNRVNbc2VsZi5jbGllbnRfY291bnRdCiAgICAgICAgICAgICAgICBzZWxmLmNsaWVudHNba2V5XSA9IHsKICAgICAgICAgICAgICAgICAgICBjb25uID0gc29jaywKICAgICAgICAgICAgICAgICAgICBuYW1lID0gbmFtZSwKICAgICAgICAgICAgICAgICAgICBhZGRyID0ga2V5LAogICAgICAgICAgICAgICAgICAgIGF1dGhlbnRpY2F0ZWQgPSAoc2VsZi5wYXNzd29yZCA9PSAiIikKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGNsaWVudF9zb2Nrc1tzb2NrXSA9IGtleQogICAgICAgICAgICAgICAgbG9nX21zZyhzdHJpbmcuZm9ybWF0KCJBZGRlZCBjbGllbnQgQ2xpZW50KGFkZHI9JXMsIG5hbWU9JXMpIiwga2V5LCBuYW1lKSkKICAgICAgICAgICAgICAgIGlmIHNlbGYucGFzc3dvcmQgPT0gIiIgdGhlbgogICAgICAgICAgICAgICAgICAgIHNvY2s6c2VuZCgib2tcbiIpCiAgICAgICAgICAgICAgICBlbHNlCiAgICAgICAgICAgICAgICAgICAgc29jazpzZW5kKCJMb2dpbiB3aXRoIC9sb2dpbiBbcGFzc3dvcmRdXG4iKQogICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgIGVuZAogICAgICAgIGVuZAoKICAgICAgICAtLSBSZWFkIGZyb20gZXhpc3RpbmcgY2xpZW50cwogICAgICAgIGZvciBzb2NrLCBrZXkgaW4gcGFpcnMoY2xpZW50X3NvY2tzKSBkbwogICAgICAgICAgICBsb2NhbCBsaW5lLCBlcnIgPSBzb2NrOnJlY2VpdmUoIipsIikKICAgICAgICAgICAgaWYgZXJyID09ICJjbG9zZWQiIHRoZW4KICAgICAgICAgICAgICAgIGxvZ19tc2coa2V5IC4uICIgaGFzIHJhZ2UgcXVpdCIpCiAgICAgICAgICAgICAgICBzb2NrOmNsb3NlKCkKICAgICAgICAgICAgICAgIHNlbGYuY2xpZW50c1trZXldID0gbmlsCiAgICAgICAgICAgICAgICBjbGllbnRfc29ja3Nbc29ja10gPSBuaWwKICAgICAgICAgICAgICAgIHNlbGYuY2xpZW50X2NvdW50ID0gbWF0aC5tYXgoMCwgc2VsZi5jbGllbnRfY291bnQgLSAxKQogICAgICAgICAgICAgICAgbG9nX21zZyhrZXkgLi4gIiBoYXMgZ29uZSBiYWNrIHRvIHJlYWxpdHkiKQogICAgICAgICAgICBlbHNlaWYgbGluZSB0aGVuCiAgICAgICAgICAgICAgICBsaW5lID0gbGluZTpnc3ViKCJeJXMqKC4tKSVzKiQiLCAiJTEiKTpsb3dlcigpIC0tIHRyaW0gYW5kIGxvd2VyY2FzZQogICAgICAgICAgICAgICAgbG9jYWwgY2xpZW50ID0gc2VsZi5jbGllbnRzW2tleV0KCiAgICAgICAgICAgICAgICBpZiBjbGllbnQgdGhlbgogICAgICAgICAgICAgICAgICAgIGlmIG5vdCBjbGllbnQuYXV0aGVudGljYXRlZCB0aGVuCiAgICAgICAgICAgICAgICAgICAgICAgIGxvY2FsIGxvZ2luX3Bhc3MgPSBsaW5lOm1hdGNoKCJeL2xvZ2luJXMrKCVTKykkIikKICAgICAgICAgICAgICAgICAgICAgICAgaWYgbG9naW5fcGFzcyA9PSBzZWxmLnBhc3N3b3JkIHRoZW4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsaWVudC5hdXRoZW50aWNhdGVkID0gdHJ1ZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgc29jazpzZW5kKCJva1xuIikKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvZ19tc2coa2V5IC4uICIgaGFzIGNvbm5lY3RlZCB0byB0aGUgYWR2ZW50dXJlIikKICAgICAgICAgICAgICAgICAgICAgICAgZWxzZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgbG9nX21zZygiV3JvbmcgcGFzc3dvcmQgYXR0ZW1wdCBmcm9tICIgLi4ga2V5KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgc29jazpzZW5kKCJMb2dpbiB3aXRoIC9sb2dpbiBbcGFzc3dvcmRdXG4iKQogICAgICAgICAgICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgICAgICAgICBlbHNlCiAgICAgICAgICAgICAgICAgICAgICAgIC0tIFBhcnNlIGNvbW1hbmRzCiAgICAgICAgICAgICAgICAgICAgICAgIGxvY2FsIHRva2VucyA9IHt9CiAgICAgICAgICAgICAgICAgICAgICAgIGZvciB0b2tlbiBpbiBsaW5lOmdtYXRjaCgiJVMrIikgZG8KICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhYmxlLmluc2VydCh0b2tlbnMsIHRva2VuKQogICAgICAgICAgICAgICAgICAgICAgICBlbmQKCiAgICAgICAgICAgICAgICAgICAgICAgIGlmICN0b2tlbnMgPiAwIHRoZW4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvY2FsIGNtZCA9IHRva2Vuc1sxXQogICAgICAgICAgICAgICAgICAgICAgICAgICAgbG9jYWwgYXJncyA9IHt1bnBhY2sodG9rZW5zLCAyKX0KCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiBjbWQgPT0gIi9yb2xsIiB0aGVuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZjpjbWRfcm9sbChrZXksIGFyZ3MsIGZhbHNlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgZWxzZWlmIGNtZCA9PSAiL2RtIiB0aGVuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZjpjbWRfcm9sbChrZXksIGFyZ3MsIHRydWUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlaWYgY21kID09ICIvZCIgdGhlbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlbGY6Y21kX2Rfcm9sbChrZXksIGFyZ3MsIGZhbHNlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgZWxzZWlmIGNtZCA9PSAiL2RtZCIgdGhlbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlbGY6Y21kX2Rfcm9sbChrZXksIGFyZ3MsIHRydWUpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgICAgICAgICAgZW5kCiAgICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgZW5kCiAgICAgICAgZW5kCgogICAgICAgIHNvY2tldC5zbGVlcCgwLjAxKSAtLSBQcmV2ZW50IGJ1c3kgd2FpdGluZwogICAgZW5kCmVuZAoKbG9jYWwgZnVuY3Rpb24gbWFpbigpCiAgICBsb2NhbCBob3N0ID0gb3MuZ2V0ZW52KCJESUNFSE9TVCIpIG9yICIwLjAuMC4wIgogICAgbG9jYWwgcG9ydF9zdHIgPSBvcy5nZXRlbnYoIkRJQ0VQT1JUIikgb3IgIjUwMDEiCiAgICBsb2NhbCBwYXNzd29yZCA9IG9zLmdldGVudigiRElDRVBBU1MiKSBvciAiIgoKICAgIGxvY2FsIHBvcnQgPSB0b251bWJlcihwb3J0X3N0cikKICAgIGlmIG5vdCBwb3J0IHRoZW4KICAgICAgICBwcmludChzdHJpbmcuZm9ybWF0KCJVbmtub3duIHBvcnQgdmFsdWU6ICVzLCBtdXN0IGJlIGFuIGludGVnZXIiLCBwb3J0X3N0cikpCiAgICAgICAgb3MuZXhpdCgxKQogICAgZW5kCgogICAgbG9jYWwgc2VydmVyID0gRGljZVNlcnZlci5uZXcoaG9zdCwgcG9ydCwgcGFzc3dvcmQpCiAgICBsb2NhbCBzdWNjZXNzLCBlcnIgPSBwY2FsbChmdW5jdGlvbigpCiAgICAgICAgc2VydmVyOnJ1bigpCiAgICBlbmQpCgogICAgaWYgbm90IHN1Y2Nlc3MgdGhlbgogICAgICAgIHByaW50KCJFUlJPUjogIiAuLiB0b3N0cmluZyhlcnIpKQogICAgICAgIG9zLmV4aXQoMSkKICAgIGVuZAplbmQKCm1haW4oKQAAAAAAAAAAdBwAAAAAAAAAAAAAAAAAAAAAAAB0HAAAAAAAAAAAAAA",
+					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAyAwAAAAAAADIDAAAAAAAAAAAAAAAA8L8"
+				]
+			]
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"ind",
+				"Help: Indexing Status"
+			],
+			[
+				"brows",
+				"Preferences: Browse Packages"
+			],
+			[
+				"pcip",
+				"Package Control: Install Package"
+			],
+			[
+				"pc",
+				"Install Package Control"
+			],
+			[
+				"index",
+				"Help: Indexing Status"
+			],
+			[
+				"pcrp",
+				"Package Control: Remove Package"
+			],
+			[
+				"pcup",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"merge",
+				"Sublime Merge: Open Repository"
+			],
+			[
+				"lua",
+				"Set Syntax: Lua"
+			],
+			[
+				"git",
+				"Set Syntax: Git Commit"
+			],
+			[
+				"pclp",
+				"Package Control: List Packages"
+			],
+			[
+				"lsp ",
+				"LSP: Troubleshoot Server"
+			],
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				"lsp rest",
+				"LSP: Restart Server"
+			],
+			[
+				"goto",
+				"LSP: Goto Definition"
+			],
+			[
+				"lsp server",
+				"LSP: Troubleshoot Server"
+			],
+			[
+				"lp",
+				"File: Print"
+			],
+			[
+				"rp",
+				"Package Control: Remove Package"
+			],
+			[
+				"ip",
+				"Package Control: Install Package"
+			],
+			[
+				"paclage",
+				"Package Control: List Packages"
+			],
+			[
+				"lsp",
+				"LSP: Enable Language Server Globally"
+			],
+			[
+				"pcr",
+				"Package Control: Remove Package"
+			],
+			[
+				"pi",
+				"Package Control: Install Package"
+			],
+			[
+				"pcl",
+				"Install Package Control"
+			],
+			[
+				"pr",
+				"Package Control: Remove Package"
+			],
+			[
+				"pl",
+				"Package Control: List Packages"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"pac",
+				"Install Package Control"
+			],
+			[
+				"pack",
+				"Install Package Control"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 323.0,
+		"history":
+		[
+			"quit()",
+			"exit()",
+			"print()",
+			"help"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/rcbensley/socketdice"
+	],
+	"file_history":
+	[
+		"/Users/rcbensley/socketdice/socketdice.sublime-project",
+		"/Users/rcbensley/carts/ref_learnlua.lua",
+		"/Users/rcbensley/carts/ref_tick.p8",
+		"/Users/rcbensley/carts/ref_sprstk.p8",
+		"/Users/rcbensley/carts/ref_scene.p8",
+		"/Users/rcbensley/carts/max.lua",
+		"/Users/rcbensley/cookbook/docs/learnlua.lua",
+		"/Users/rcbensley/socketdice/socket.lua",
+		"/Users/rcbensley/carts/carts.sublime-project",
+		"/Users/rcbensley/carts/alien.p8",
+		"/Users/rcbensley/carts/max.p8",
+		"/Users/rcbensley/carts/max_intro.lua",
+		"/Users/rcbensley/carts/notes.txt",
+		"/Users/rcbensley/carts/crab.p8",
+		"/Users/rcbensley/carts/max/max.p8",
+		"/Users/rcbensley/carts/max/max.lua",
+		"/Users/rcbensley/carts/exo-sample-xd-004.txt",
+		"/Users/rcbensley/Library/Application Support/Sublime Text/Packages/User/LSP.sublime-settings",
+		"/Users/rcbensley/Library/Application Support/Sublime Text/Packages/LSP/LSP.sublime-settings",
+		"/Users/rcbensley/dotfiles/setup.py",
+		"/Users/rcbensley/cookbook/zig/hello.zig",
+		"/Users/rcbensley/Library/Application Support/Sublime Text/Packages/User/sublime_jedi.sublime-settings",
+		"/Users/rcbensley/Library/Application Support/Sublime Text/Packages/Jedi - Python autocompletion/sublime_jedi.sublime-settings",
+		"/Users/rcbensley/cookbook/python/db.py",
+		"/Users/rcbensley/cookbook/python/argus_health",
+		"/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/urllib/parse.py",
+		"/Users/rcbensley/Library/Application Support/Sublime Text/Packages/User/LSP-pylsp.sublime-settings",
+		"/Users/rcbensley/Library/Application Support/Sublime Text/Packages/LSP-pylsp/LSP-pylsp.sublime-settings",
+		"/Users/rcbensley/carts/.lexaloffle/Picotron/drive/desktop/max/max.p64",
+		"/Users/rcbensley/carts/.lexaloffle/Picotron/drive/desktop/max/max.lua",
+		"/Users/rcbensley/carts/cafe.lua",
+		"/Users/rcbensley/src/gohlspeak/gohlsay.go",
+		"/Users/rcbensley/src/gohlspeak/Makefile",
+		"/Users/rcbensley/src/gohlspeak/.gitignore",
+		"/Users/rcbensley/src/gohlspeak/go.mod",
+		"/Users/rcbensley/src/cookbook/python/db.py",
+		"/Users/rcbensley/Downloads/Ghosts of Saltmarsh.md"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "client.lua",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2056,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1249,
+								1249
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 520.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"sheets":
+			[
+				{
+					"buffer": 1,
+					"file": "server.lua",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7284,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								818,
+								818
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.5,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.LSP Log Panel":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.SublimeLinter":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.diagnostics":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.exec":
+	{
+		"height": 223.0,
+		"history":
+		[
+		]
+	},
+	"output.find_results":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"pinned_build_system": "Packages/User/love2d.sublime-build",
+	"project": "socketdice.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"server",
+				"server.lua"
+			],
+			[
+				"",
+				"argus_health"
+			],
+			[
+				"ar",
+				"argus_health"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 259.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"new"
+			]
+		],
+		"width": 494.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 212.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

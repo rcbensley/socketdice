@@ -1,0 +1,11 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+"settings": {
+        "build_system": "Packages/User/Python Tooling.sublime-build"
+    }
+}
