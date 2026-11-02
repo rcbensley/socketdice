@@ -4,57 +4,7 @@ local socket = require("socket")
 
 math.randomseed(os.time())
 
-local HEADER = [[
-  ██████▒█████ ▄████▄ ██ ▄█▓████▄▄▄████  ▓█████▄ ██▓▄████▄▓█████
-▒██    ▒██▒  █▒██▀ ▀█ ██▄█▒▓█   ▓  ██▒   ▒██▀ ██▓██▒██▀ ▀█▓█   ▀
-░ ▓██▄ ▒██░  █▒▓█    ▓███▄░▒███ ▒ ▓██░   ░██   █▒██▒▓█    ▒███
-  ▒   █▒██   █▒▓▓▄ ▄█▓██ █▄▒▓█  ░ ▓██▓   ░▓█▄   ░██▒▓▓▄ ▄█▒▓█  ▄
-▒██████░ ████▓▒ ▓███▀▒██▒ █░▒████▒▒██▒   ░▒████▓░██▒ ▓███▀░▒████▒
-▒ ▒▓▒ ▒░ ▒░▒░▒░ ░▒ ▒ ▒ ▒▒ ▓░░ ▒░ ░▒ ░░    ▒▒▓  ▒░▓ ░ ░▒ ▒ ░░ ▒░ ░
-░ ░▒  ░  ░ ▒ ▒░ ░  ▒ ░ ░▒ ▒░░ ░  ░  ░     ░ ▒  ▒ ▒ ░ ░  ▒  ░ ░  ░
-░  ░  ░░ ░ ░ ▒░    ░ ░░ ░   ░  ░        ░ ░  ░ ▒ ░      ░  ░
-     ░    ░ ░░    ░  ░     ░  ░            ░    ░      ░  ░
-                ░                     ░        ░
-]]
-
 local TITLE = "SOCKETDICE"
-
-local SERVER_INTROS = {
-	"for pitiful roles",
-	"for critical fails",
-	"for the murder hobos to ride again",
-	"for the adventure toddlers",
-	"for the Bard to TPK...again,",
-	"for your epic nat 20's! Nah just kidding, it's a 1 again",
-	"to rig the DC for all charisma builds",
-	"for them to talk themselves outta this one",
-	"the party to just opt for violence, again",
-	"for really cautious and careful decisions",
-	"for these amateurs to just meta it",
-	"to see if they commit warcrimes",
-}
-
-local function server_intro()
-	return SERVER_INTROS[math.random(1, #SERVER_INTROS)]
-end
-
-local NAMES = {
-	"SPOOKY SKELETON",
-	"BLOODY BARD",
-	"WICKED WIZARD",
-	"SKATEBOARDING SORCERER",
-	"PROBABLE MIMIC",
-	"TAVERN NPC No.3",
-	"BLOODY BARBARIAN",
-	"THE GREAT GOBO",
-	"WIGGLY WARRIOR",
-}
-
--- Shuffle names
-for i = #NAMES, 2, -1 do
-	local j = math.random(i)
-	NAMES[i], NAMES[j] = NAMES[j], NAMES[i]
-end
 
 local function log_msg(message)
 	local now = os.date("%Y-%m-%d %H:%M:%S")
@@ -64,13 +14,14 @@ end
 local DiceServer = {}
 DiceServer.__index = DiceServer
 
-function DiceServer.new(host, port, password)
+function DiceServer.new(host, port, password, max_players)
 	local self = setmetatable({}, DiceServer)
-	self.host = host
-	self.port = port
+	self.host = host or "127.0.0.1"
+	self.port = port or 5000
 	self.password = password or ""
 	self.clients = {} -- key -> {conn = client, name = name, addr = addr}
-	self.client_count = 0
+	self.max_players = max_players or 8
+	self.player_count = 0
 	return self
 end
 
@@ -163,8 +114,7 @@ function DiceServer:run()
 	server:settimeout(0) -- non-blocking
 	local ip, port = server:getsockname()
 
-	print(HEADER)
-	local intro = string.format("%s is listening %s, on %s:%s", TITLE, server_intro(), ip, tostring(port))
+	local intro = string.format("%s is listening on %s:%s", TITLE, ip, tostring(port))
 	log_msg(intro)
 
 	local client_socks = {}
