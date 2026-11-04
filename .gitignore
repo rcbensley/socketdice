@@ -3,3 +3,7 @@
 data/
 saves/
 *.db
+*.so
+*.a
+*.exe
+*.dll

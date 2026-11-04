@@ -2,14 +2,11 @@
 
 A learning project to provide networked dice rolling with a central server and clients to connect to a game session and roll dice, for a Dungeons and Dragons game session.
 
-So far a python server and client exist with the intention of migrating to Lua and various lua platforms so I can share code between them. Sadly not all of them support shared objects, or FFI so I can't keep some core logic in C or Go.
-
-## Servers
-
-* Love2D headless server.
-* Picotron server with GUI thrills.
+So far a python server and client exist with the intention of various clients.
 
 ## Clients
+
+All lua based clients! Other than the included Pythonc client:
 
 * Love2D
 * Picotron
