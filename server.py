@@ -79,11 +79,12 @@ class Client:
 
 
 class DiceServer:
-    def __init__(self, host: str, port: int, password: str = None):
+    def __init__(self, host: str, port: int, password: str = None, echo=False):
         self.host = (host, port)
         self.password = password
         self.clients = {}
         self.lock = threading.Lock()
+        self.echo = echo
         self.commands = {
             "/roll": self.cmd_roll,
             "/dm": self.cmd_rolldm,
@@ -157,6 +158,8 @@ class DiceServer:
         log_msg = f"{prefix}{name} rolls {result}"
         self.log(log_msg)
         if not dm:
+            self.broadcast(log_msg)
+        if.self.echo:
             self.broadcast(log_msg)
 
     def rollstr(self, msg):
@@ -285,6 +288,7 @@ def main():
     parser = argparse.ArgumentParser()
     for k, v in cfg.items():
         parser.add_argument(f"--{k}", default=v)
+    parser.add_argument("--echo", action="store_true", default=False)
     args = parser.parse_args()
     try:
         p = int(args.port)
@@ -296,6 +300,7 @@ def main():
             host=args.host,
             port=p,
             password=args.password,
+            echo=args.echo,
         )
         ds()
     except Exception as e:
